@@ -4,7 +4,7 @@
 **Organizer:** OpenServ ([@openservai](https://x.com/openservai))
 **Deadline:** November 15, 2026, 23:59 UTC
 **Prize pool:** $5,000
-**Tracks:** Kite, Reppo, Open, with Dolphin as the open-model backend
+**Tracks:** Kite, Reppo, Open
 
 ## In one line
 Openpath is a console where anyone writes a policy for an AI agent, runs a case through it, and sees the exact path the decision took, with exact limits enforced every time, AI judgment where judgment is needed, and a feedback score that shapes the next run.
@@ -13,7 +13,7 @@ Openpath is a console where anyone writes a policy for an AI agent, runs a case 
 1. Write a policy: plain words for the AI, plus an exact spending limit, approved vendors and known PO numbers.
 2. Submit a case: amount, vendor, invoice or PO number, and notes.
 3. Fixed rules run first. If a rule decides the case, the AI step is skipped.
-4. The judgment step runs on SERV Reasoning, with Dolphin open models available as a second choice.
+4. The judgment step runs on SERV Reasoning.
 5. Kite Passport identity and session limits join the path when the `kpass` CLI is connected.
 6. The console shows the decision and the full path.
 7. Reppo's Evaluation API scores the decision. The score and critique are stored.

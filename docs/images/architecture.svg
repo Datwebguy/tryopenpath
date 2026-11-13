@@ -14,7 +14,7 @@
   <text x="135" y="288" text-anchor="middle" font-size="20" font-weight="700" fill="#0f1729">Case</text>
   <text x="135" y="314" text-anchor="middle" font-size="14" fill="#5b6478">amount · vendor · PO · notes</text>
 
-  <!-- Hard checks -->
+  <!-- Fixed rules -->
   <rect x="300" y="40" width="300" height="360" rx="20" fill="#e8f5fe" stroke="#b6e0f8"/>
   <text x="450" y="76" text-anchor="middle" font-size="18" font-weight="700" fill="#0369a1">FIXED RULES</text>
   <g font-size="16" font-weight="600" fill="#0f1729">
@@ -28,8 +28,7 @@
   <!-- Judgment -->
   <rect x="670" y="120" width="280" height="200" rx="20" fill="#f6edff" stroke="#dcc3fb"/>
   <text x="810" y="156" text-anchor="middle" font-size="18" font-weight="700" fill="#6d28d9">AI JUDGMENT</text>
-  <rect x="694" y="176" width="232" height="52" rx="12" fill="#fff" stroke="#dcc3fb"/><text x="810" y="208" text-anchor="middle" font-size="16" font-weight="600" fill="#0f1729">Dolphin open AI model</text>
-  <rect x="694" y="244" width="232" height="52" rx="12" fill="#fff" stroke="#dcc3fb"/><text x="810" y="276" text-anchor="middle" font-size="16" font-weight="600" fill="#0f1729">SERV Reasoning</text>
+  <rect x="694" y="196" width="232" height="84" rx="12" fill="#fff" stroke="#dcc3fb"/><text x="810" y="232" text-anchor="middle" font-size="18" font-weight="700" fill="#0f1729">SERV Reasoning</text><text x="810" y="258" text-anchor="middle" font-size="14" fill="#5b6478">approve or escalate, with a reason</text>
 
   <!-- Decision -->
   <rect x="1020" y="120" width="220" height="200" rx="20" fill="#e9fbef" stroke="#a9ebc0"/>

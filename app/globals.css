@@ -167,7 +167,7 @@ textarea { resize: vertical; }
 .provider { font-size: 0.75rem; color: var(--faint); }
 .provider::before { content: "·"; margin-right: 8px; }
 .node-detail { margin-top: 8px; font-size: 0.88rem; color: #3b465e; }
-.node-note { margin-top: 6px; font-size: 0.78rem; color: var(--faint); }
+
 .link { width: 2px; height: 14px; background: linear-gradient(var(--line-strong), var(--line)); margin-left: 30px; animation: grow 0.3s both; transform-origin: top; }
 .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 0.76rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
 .pill.pass { background: var(--pass-bg); color: var(--pass); } .pill.fail { background: var(--fail-bg); color: var(--fail); }

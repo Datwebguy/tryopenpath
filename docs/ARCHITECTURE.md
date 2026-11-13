@@ -44,8 +44,8 @@ A Next.js (App Router, TypeScript) application with one flow: policy and case, h
 }
 ```
 
-## Judgment providers
-`lib/judge.ts` sends every judgment to SERV Reasoning first. When `DOLPHIN_API_KEY` and `DOLPHIN_MODEL` are set, Dolphin open models are the second choice. `JUDGE_PROVIDER=dolphin` reverses the order. When a provider passes the step on, the path records which one and why.
+## Judgment
+`lib/judge.ts` sends every judgment to SERV Reasoning through chat completions, with a system prompt on every request. The answer is structured JSON: approve or escalate, with a reason. The path records which SERV model answered and how long it took. If SERV does not answer, the case is escalated to a person.
 
 ## Reppo
 `lib/reppo.ts` follows the Evaluation API guide at https://eval.reppo.xyz/agents.md. A decision is submitted with `taskType: "action"`, and the status moves from `QUEUED` and `PROCESSING` to `COMPLETED`. The score, route, reason and rubric scores are stored with the run.

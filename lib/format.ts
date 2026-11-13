@@ -48,7 +48,7 @@ export const routeLabel = (r: string) => ROUTE_LABELS[r] ?? cap(r);
 const VERDICT_LABELS: Record<string, string> = { accept: "Accepted", reject: "Rejected" };
 export const verdictLabel = (v: string) => VERDICT_LABELS[v] ?? cap(v);
 
-const PROVIDER_NAMES: Record<string, string> = { serv: "SERV Reasoning", dolphin: "Dolphin" };
+const PROVIDER_NAMES: Record<string, string> = { serv: "SERV Reasoning" };
 // "serv (serv-mini)" -> "SERV Reasoning · serv-mini"
 export function providerLabel(p: string) {
   const m = p.match(/^(\w+) \((.+)\)$/);

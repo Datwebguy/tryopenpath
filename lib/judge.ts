@@ -1,76 +1,42 @@
 import type { Case } from "./types";
 
 const SYSTEM_PROMPT = `You are Openpath, a policy enforcement agent.
-All hard rules (limits, PO match, vendor allowlist) have already been checked by code and passed.
+The fixed rules (spending limit, PO number, approved vendor) have already been checked and passed.
 Your only job is the judgment step: read the case notes and decide whether anything
-looks suspicious or needs a human. Return only valid JSON:
+looks suspicious or needs a person. Return only valid JSON:
 { "decision": "approve" | "escalate", "reason": "string" }`;
 
-export type ModelJudgment = { decision: "approve" | "escalate"; reason: string };
-export type Judged = ModelJudgment & { provider: string; failed: string[] };
+export type Judged = { decision: "approve" | "escalate"; reason: string; provider: string };
 
-type Backend = { name: string; url: string; key?: string; model?: string };
+// Judgment step, powered by SERV Reasoning (chat completions).
+export async function judge(policy: string, c: Case, feedback?: string): Promise<Judged> {
+  const key = process.env.SERV_API_KEY;
+  const model = process.env.SERV_MODEL;
+  if (!key || !model) throw new Error("Set SERV_API_KEY and SERV_MODEL.");
 
-const dolphin = (): Backend => ({
-  name: "dolphin",
-  url: "https://lighthouse.dphn.ai/run/text-v/v1/chat/completions",
-  key: process.env.DOLPHIN_API_KEY,
-  model: process.env.DOLPHIN_MODEL,
-});
-
-const serv = (): Backend => ({
-  name: "serv",
-  url: "https://inference-api.openserv.ai/v1/chat/completions",
-  key: process.env.SERV_API_KEY,
-  model: process.env.SERV_MODEL,
-});
-
-async function call(b: Backend, policy: string, c: Case, feedback?: string): Promise<ModelJudgment> {
-  const res = await fetch(b.url, {
+  const res = await fetch("https://inference-api.openserv.ai/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${b.key}` },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
     body: JSON.stringify({
-      model: b.model,
+      model,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         {
           role: "user",
           content:
             `Policy: ${policy}\nCase: ${JSON.stringify(c)}` +
-            (feedback
-              ? `\nA previous run of this same case was scored. Address this feedback:\n${feedback}`
-              : ""),
+            (feedback ? `\nA previous run of this same case was scored. Address this feedback:\n${feedback}` : ""),
         },
       ],
     }),
   });
-  if (!res.ok) throw new Error(`${b.name} error ${res.status}: ${await res.text()}`);
+  if (!res.ok) throw new Error(`SERV error ${res.status}: ${(await res.text()).slice(0, 200)}`);
+
   const data = await res.json();
   const text: string = data.choices?.[0]?.message?.content ?? "";
   const json = text.match(/\{[\s\S]*\}/)?.[0];
-  if (!json) throw new Error(`${b.name} returned no JSON`);
-  const out = JSON.parse(json) as ModelJudgment;
-  if (out.decision !== "approve" && out.decision !== "escalate") {
-    throw new Error(`${b.name} returned an invalid decision`);
-  }
-  return out;
-}
-
-// Judgment node. SERV Reasoning answers by default. Dolphin (open models) is the second choice,
-// or the first one when JUDGE_PROVIDER=dolphin.
-export async function judge(policy: string, c: Case, feedback?: string): Promise<Judged> {
-  const order = [serv(), dolphin()].filter((b) => b.key && b.model);
-  if (process.env.JUDGE_PROVIDER === "dolphin") order.sort((a) => (a.name === "dolphin" ? -1 : 1));
-  if (order.length === 0) throw new Error("Set SERV_API_KEY and SERV_MODEL (or DOLPHIN_API_KEY and DOLPHIN_MODEL).");
-
-  const errors: string[] = [];
-  for (const b of order) {
-    try {
-      const out = await call(b, policy, c, feedback);
-      return { ...out, provider: `${b.name} (${b.model})`, failed: errors };
-    } catch (e) {
-      errors.push(String(e).replace(/^Error: /, "").slice(0, 200));
-    }
-  }
-  throw new Error(errors.join(" | "));
+  if (!json) throw new Error("SERV returned no JSON");
+  const out = JSON.parse(json) as { decision: string; reason: string };
+  if (out.decision !== "approve" && out.decision !== "escalate") throw new Error("SERV returned an invalid decision");
+  return { decision: out.decision, reason: out.reason, provider: `serv (${model})` };
 }

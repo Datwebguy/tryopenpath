@@ -7,7 +7,7 @@ Primary sources for SERV Hackathon Edition 02 and the partner stacks.
 - Submission form: https://openserv.typeform.com/submissions02
 - OpenServ on X: https://x.com/openservai
 - Previous edition: https://www.openserv.ai/hackathon
-- Partner credits for the Reppo and Dolphin tracks: join https://t.me/openservai and message a community lead with your track.
+- Partner credits for the Reppo track: join https://t.me/openservai and message a community lead with your track.
 
 ## SERV Reasoning
 - What is SERV: https://docs.openserv.ai/what-is-serv
@@ -27,13 +27,6 @@ Primary sources for SERV Hackathon Edition 02 and the partner stacks.
 - Platform vision (12 Nov 2026): https://x.com/openservai/status/2120911633971040519
 - Boundaries and control: https://x.com/dashersw/status/2120925254222573604
 - Graph Sharding interest form: https://openserv.typeform.com/graphsharding
-
-## Dolphin
-- Coupon credits: https://dphn.ai/docs/coupon-credits/
-- Network API: https://dphn.ai/docs/dphn-api/
-- Base URL: `https://lighthouse.dphn.ai/run/text-v/v1` (OpenAI-compatible)
-- Live model list: `GET /models`
-- App: https://app.dphn.ai
 
 ## Kite
 - Passport: https://docs.gokite.ai/passport

@@ -5,7 +5,7 @@
 - [x] Policy editor with plain text, spending limit, vendor and PO tags
 - [x] Case form with suggestions from the saved lists
 - [x] Hard rules as code: fields, spending limit, PO match, vendor list
-- [x] Judgment step on SERV Reasoning, with Dolphin open models as an optional second choice
+- [x] Judgment step on SERV Reasoning
 - [x] Path graph with code and model steps, timings and skipped steps
 - [x] Reppo scoring with a live status and a per-dimension breakdown
 - [x] Stored history and feedback that carries into the next run

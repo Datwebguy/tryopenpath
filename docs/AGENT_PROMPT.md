@@ -16,7 +16,7 @@ A console where anyone writes a policy, runs a case, and sees the exact path the
 1. Save a policy: plain-language text, a spending limit, approved vendors, known PO numbers.
 2. Submit a case: amount, vendor, invoice number, notes.
 3. Hard rules run as code. A rule that decides the case skips the model step.
-4. The judgment step runs through Dolphin or SERV Reasoning and returns structured JSON.
+4. The judgment step runs on SERV Reasoning and returns structured JSON.
 5. Kite Passport identity and session limits join the path when connected.
 6. The decision and path are shown and saved.
 7. Reppo scores the decision, and the score is stored and shown.
@@ -24,12 +24,11 @@ A console where anyone writes a policy, runs a case, and sees the exact path the
 
 ## Stack
 - Next.js (App Router) and TypeScript, with plain CSS
-- Server routes for SERV, Dolphin, Reppo and Kite calls
+- Server routes for SERV, Reppo and Kite calls
 - Environment variables for every key and model id
 
 ## Integrations
 - **SERV Reasoning:** the core of the judgment step. `https://inference-api.openserv.ai/v1/chat/completions`, Bearer auth, a system prompt on every request.
-- **Dolphin:** `https://lighthouse.dphn.ai/run/text-v/v1/chat/completions`, OpenAI-compatible, the second choice for the judgment step (first with `JUDGE_PROVIDER=dolphin`).
 - **Reppo:** `https://eval.reppo.xyz/api/v1/agents/evals`, follow https://eval.reppo.xyz/agents.md.
 - **Kite Passport:** the `kpass` CLI with `--output json --no-interactive`.
 

@@ -11,7 +11,6 @@ export type Step = {
   result: string;
   detail?: string;
   provider?: string; // which model answered a model step
-  fallbacks?: string[]; // providers asked earlier, with the reason each passed the step on
   ms?: number; // how long the step took
 };
 

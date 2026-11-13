@@ -38,7 +38,7 @@ Openpath is a console for AI decisions. You describe a policy in plain words, se
 1. **Write a policy.** Plain words for the AI, plus an exact spending limit, approved vendors and known PO numbers.
 2. **Run a case.** Enter an amount, vendor, PO number and notes.
 3. **Fixed rules run first.** If a rule decides the case, the decision is made right there and the AI step is skipped.
-4. **SERV Reasoning judges the rest.** Dolphin open models are ready as a second choice, or can go first with one setting.
+4. **SERV Reasoning judges the rest.** It reads the notes against your policy and answers approve or escalate, with a plain reason.
 5. **See the decision and its path.** Approve, deny or escalate, with a plain reason.
 6. **Reppo scores it.** Usually within 30 to 90 seconds.
 7. **Run it again.** The saved feedback joins the next run, and the console shows how the score changed.
@@ -73,7 +73,6 @@ When a rule decides a case, the AI step is skipped and the path says exactly why
 | Partner | Role in Openpath |
 |---|---|
 | **SERV Reasoning** (OpenServ) | The core of Openpath. Every AI judgment runs on SERV Reasoning, using any chat model from the SERV catalog. |
-| **Dolphin** | Open AI models for the judgment step. Joins as the second choice when `DOLPHIN_API_KEY` and `DOLPHIN_MODEL` are set. |
 | **Reppo** | Scores every decision. Scores and critiques are saved and used on the next run. |
 | **Kite Passport** | Adds identity and session spending-limit checks to the path once `kpass` is connected. |
 
@@ -94,7 +93,6 @@ Open the console, write your first policy, and run a case.
 | Service | Where to get it |
 |---|---|
 | SERV | [console.openserv.ai](https://console.openserv.ai). List chat models with `GET https://inference-api.openserv.ai/v1/models`. |
-| Dolphin | [app.dphn.ai](https://app.dphn.ai): verify your wallet, redeem credits, then **API Keys → Create Key**. List models with `GET https://lighthouse.dphn.ai/run/text-v/v1/models`. |
 | Reppo | [eval.reppo.xyz](https://eval.reppo.xyz): sign in, then **API Key → Generate**. |
 
 ## Configuration
@@ -102,8 +100,6 @@ Open the console, write your first policy, and run a case.
 | Variable | Purpose |
 |---|---|
 | `SERV_API_KEY`, `SERV_MODEL` | Your SERV key and the model to use, for example `serv-mini`. |
-| `DOLPHIN_API_KEY`, `DOLPHIN_MODEL` | Optional. Adds Dolphin open models as the second choice for the judgment step. |
-| `JUDGE_PROVIDER` | Set to `dolphin` to try Dolphin before SERV. |
 | `REPPO_API_KEY` | Enables scoring and the feedback loop. |
 | `KPASS_BIN` | Optional. Where `kpass` is installed, to add Kite Passport checks. |
 | `OPENPATH_DATA_DIR` | Where your policy and history are saved. Defaults to `.data` in the project. |
@@ -131,7 +127,7 @@ Then set `KPASS_BIN` to the `kpass` path. Every case now includes two steps:
 
 1. Create a service from this repository.
 2. Add a **volume** and mount it at `/data`.
-3. Set the variables: `OPENPATH_DATA_DIR=/data`, `SERV_API_KEY`, `SERV_MODEL`, `REPPO_API_KEY`, and optionally `DOLPHIN_API_KEY` and `DOLPHIN_MODEL`.
+3. Set the variables: `OPENPATH_DATA_DIR=/data`, `SERV_API_KEY`, `SERV_MODEL`, `REPPO_API_KEY`.
 4. Deploy. Railway sets `PORT`, and `npm start` uses it.
 
 The volume keeps your policy, history and scores across deploys.
@@ -143,7 +139,7 @@ The volume keeps your policy, history and scores across deploys.
 
 ## Built for SERV Hackathon Edition 02
 
-Tracks: **Kite**, **Reppo**, **Open**, with **Dolphin** as the open-model backend.
+Tracks: **Kite**, **Reppo** and **Open**.
 [Submission form](https://openserv.typeform.com/submissions02)
 
 ## Author

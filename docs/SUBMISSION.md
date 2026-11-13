@@ -4,7 +4,7 @@
 Openpath
 
 ## Tracks
-Kite, Reppo, Open, with Dolphin as the open-model backend for judgment steps.
+Kite, Reppo and Open.
 
 ## What it does
 Openpath is a console where anyone writes a policy for an AI agent and sees the exact path every decision takes. Hard rules and spending limits run as code. The judgment step calls a model only where judgment is needed. The full path is visible, the outcome is scored by independent evaluators, and the score and critique shape the next run of the same case.
@@ -15,7 +15,6 @@ SERV Reasoning powers the judgment step. After the code checks clear a case, the
 ## Partner usage
 - **Kite:** the `kpass` CLI adds identity, per-transaction limit, remaining session budget and expiry checks to the path.
 - **Reppo:** every decision is submitted to the Evaluation API. The score, route, reason and rubric scores are stored and used on the next run of the same case, and the console shows the score change.
-- **Dolphin:** open-model inference as an optional second choice for the judgment step, switchable to first with one setting.
 
 ## Real data throughout
 Policy text, spending limit, vendors and PO numbers come from the user. Scores come from Reppo. Decisions come from live model calls. History is stored on disk.

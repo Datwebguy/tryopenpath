@@ -68,7 +68,6 @@ export default function PathGraph({ path, ms }: { path: Step[]; ms?: number }) {
                     {s.ms !== undefined && <span className="provider">{duration(s.ms)}</span>}
                   </div>
                   {s.detail && <p className="node-detail">{s.detail}</p>}
-                  {s.fallbacks?.map((f, k) => <p className="node-note" key={k}>Tried first: {f}</p>)}
                 </div>
               </div>
               {i < path.length - 1 && <div className="link" style={{ animationDelay: `${i * 90 + 60}ms` }} />}

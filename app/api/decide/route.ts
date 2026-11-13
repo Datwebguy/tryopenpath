@@ -65,7 +65,6 @@ export async function POST(req: Request) {
       result: j.decision,
       detail: j.reason,
       provider: j.provider,
-      fallbacks: j.failed.length ? j.failed : undefined,
       ms: Date.now() - t,
     });
     const out: Decision = { decision: j.decision, reason: j.reason, path, ms: Date.now() - started };
