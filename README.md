@@ -157,6 +157,10 @@ The volume keeps your policy, history and scores across deploys.
 - [Project overview](docs/PRJ.md) · [Product](docs/PRODUCT.md) · [Architecture and routes](docs/ARCHITECTURE.md)
 - [Build brief](docs/AGENT_PROMPT.md) · [Plan](docs/PLAN.md) · [Resources](docs/RESOURCES.md) · [Submission](docs/SUBMISSION.md)
 
+## Security
+
+Each visitor works in a private workspace, runs are saved by the server, every route validates its input and is rate limited, and the page ships with strict browser protections. The AI is told to treat notes as untrusted text, and rules are exact data that can never run as code. Read the details in [SECURITY.md](SECURITY.md).
+
 ## Built for SERV Hackathon Edition 02
 
 Tracks: **Kite**, **Reppo** and **Open**.

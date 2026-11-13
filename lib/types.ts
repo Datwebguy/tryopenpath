@@ -20,6 +20,7 @@ export type Decision = {
   reason: string;
   path: Step[];
   ms?: number; // total time for the whole path
+  runId?: string; // the saved run this decision belongs to, set by the server
 };
 
 export type EvalStatus = "PENDING" | "SETTLED" | "FAILED";

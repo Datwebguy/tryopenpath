@@ -1,33 +1,39 @@
+import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
-import { runCodeChecks } from "@/lib/checks";
 import { caseKey } from "@/lib/case";
+import { runCodeChecks } from "@/lib/checks";
 import { routeLabel, stepLabel, verdictLabel } from "@/lib/format";
-import { latestScored, vendorRunCount } from "@/lib/history";
+import { addRun, latestScored, vendorRunCount } from "@/lib/history";
+import { parseCase, readBody } from "@/lib/input";
 import { judge } from "@/lib/judge";
 import { kiteChecks } from "@/lib/kite";
+import { guard } from "@/lib/limit";
 import { getPolicy } from "@/lib/policy";
 import { describeCond, ruleMatches, type RuleContext } from "@/lib/rules";
-import type { Case, Decision, Step } from "@/lib/types";
+import type { Decision, Step } from "@/lib/types";
+import { workspace } from "@/lib/workspace";
 
 const name = (s: Step) => s.label ?? stepLabel(s.step);
 
 export async function POST(req: Request) {
-  const started = Date.now();
-  const body = await req.json();
-  const c: Case = {
-    amount: Number(body.amount),
-    vendor: String(body.vendor ?? ""),
-    invoiceNumber: String(body.invoiceNumber ?? ""),
-    notes: String(body.notes ?? ""),
-  };
+  const limited = guard(req, "decide", { perMinute: 15, perHour: 150, allVisitorsPerHour: 600 });
+  if (limited) return limited;
 
-  const policy = getPolicy();
+  const started = Date.now();
+  const ws = await workspace();
+  const read = await readBody(req, 8_000);
+  if (read.error) return read.error;
+  const parsed = parseCase(read.body);
+  if (!parsed.case) return NextResponse.json({ error: parsed.error }, { status: 400 });
+  const c = parsed.case;
+
+  const policy = getPolicy(ws);
   if (!policy) {
     return NextResponse.json({ error: "Save a policy first, then run a case." }, { status: 400 });
   }
 
   // Feedback loop: look up the Reppo score from the last run of this same case.
-  const prior = latestScored(caseKey(c))?.eval;
+  const prior = latestScored(ws, caseKey(c))?.eval;
   const feedback = prior
     ? `Score ${prior.score}/100 (${prior.verdict}, route: ${prior.route}). ${prior.reason ?? ""} ` +
       (prior.critiques ?? []).map((k) => `${k.criterion}: ${k.score}/100`).join(", ")
@@ -39,7 +45,7 @@ export async function POST(req: Request) {
   const ctx: RuleContext = {
     ...c,
     weekday: new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" }).toLowerCase(),
-    earlierRuns: vendorRunCount(c.vendor),
+    earlierRuns: vendorRunCount(ws, c.vendor),
   };
   for (const rule of policy.rules) {
     const hit = ruleMatches(rule, ctx);
@@ -59,6 +65,13 @@ export async function POST(req: Request) {
     detail: prior ? `${verdictLabel(prior.verdict ?? "")} · ${routeLabel(prior.route ?? "")}` : undefined,
   });
 
+  // The server saves every run itself, so the decision on record is always the one it made.
+  const finish = (decision: Decision) => {
+    const id = randomUUID().replace(/-/g, "").slice(0, 10);
+    addRun(ws, { id, caseKey: caseKey(c), case: c, decision, at: new Date().toISOString() });
+    return NextResponse.json({ ...decision, runId: id });
+  };
+
   const failed = path.filter((s) => s.result === "failed");
   const sentUp = path.filter((s) => s.step.startsWith("rule_") && s.result === "escalate");
 
@@ -70,11 +83,11 @@ export async function POST(req: Request) {
       result: "skipped",
       detail: "A rule already decided this case, so the AI judgment was not needed.",
     });
-    const out: Decision =
+    return finish(
       failed.length > 0
         ? { decision: "deny", reason: `Denied by rule: ${failed.map((s) => name(s).toLowerCase()).join(", ")}`, path, ms: Date.now() - started }
-        : { decision: "escalate", reason: `Sent to a person by rule: ${sentUp.map((s) => name(s).toLowerCase()).join(", ")}`, path, ms: Date.now() - started };
-    return NextResponse.json(out);
+        : { decision: "escalate", reason: `Sent to a person by rule: ${sentUp.map((s) => name(s).toLowerCase()).join(", ")}`, path, ms: Date.now() - started },
+    );
   }
 
   const t = Date.now();
@@ -88,8 +101,7 @@ export async function POST(req: Request) {
       provider: j.provider,
       ms: Date.now() - t,
     });
-    const out: Decision = { decision: j.decision, reason: j.reason, path, ms: Date.now() - started };
-    return NextResponse.json(out);
+    return finish({ decision: j.decision, reason: j.reason, path, ms: Date.now() - started });
   } catch (e) {
     console.error("Judgment step failed:", e);
     path.push({
@@ -99,12 +111,11 @@ export async function POST(req: Request) {
       detail: "The AI provider did not return an answer.",
       ms: Date.now() - t,
     });
-    const out: Decision = {
+    return finish({
       decision: "escalate",
       reason: "The AI judgment did not come through, so this case goes to a person.",
       path,
       ms: Date.now() - started,
-    };
-    return NextResponse.json(out);
+    });
   }
 }

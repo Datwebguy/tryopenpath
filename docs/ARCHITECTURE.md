@@ -16,9 +16,9 @@ A Next.js (App Router, TypeScript) application with one flow: policy and case, h
 ## Server routes
 | Route | Purpose |
 |---|---|
-| `POST /api/decide` | Runs the hard checks, loads stored feedback, calls the judgment step when needed, and returns the decision and path. |
-| `POST /api/evaluate` | Submits a finished decision to Reppo as an `action` and stores the run. |
-| `GET /api/evaluate/:evalId` | Reads the Reppo evaluation and stores the settled score on the run. |
+| `POST /api/decide` | Validates the case, runs the checks and your rules, loads stored feedback, calls the judgment step when needed, saves the run, and returns the decision, the path and the `runId`. |
+| `POST /api/evaluate` | Takes a `runId`, and submits that saved run to Reppo as an `action`. The decision always comes from the saved run, never from the request. |
+| `GET /api/evaluate/:evalId` | Reads the Reppo evaluation for a run in the visitor's own workspace and saves the settled score on it. |
 | `GET` / `PUT /api/policy` | Reads and saves the policy, including your rules. `DELETE` removes it. |
 | `GET /api/history` | Lists saved runs. `DELETE` clears them. |
 | `GET /api/runs/:id` | One saved run, used by the shared run page at `/run/:id`. |
@@ -61,8 +61,15 @@ A Next.js (App Router, TypeScript) application with one flow: policy and case, h
 ## Kite Passport
 `lib/kite.ts` runs the `kpass` CLI with `--output json --no-interactive`, because Kite publishes its Passport interface as a CLI. `kpass me` confirms identity. `kpass agent:session list --status active` (or `kpass user sessions --status active`) returns the active session with `max_amount_per_tx`, `max_total_amount`, `spent_total`, `reserved_total` and `expires_at`. The amount must fit the per-transaction limit and the budget left, and the session must not have expired. Errors arrive as JSON with a `hint`, which the path shows.
 
-## Storage
-`lib/storage.ts` writes `policy.json` and `history.json` to `OPENPATH_DATA_DIR`, which defaults to `.data` in the project. On Railway, mount a volume and point the variable at it.
+## Storage and visitors
+Each visitor gets a private workspace tied to a random, HttpOnly cookie (`lib/workspace.ts`). Their `policy.json` and `history.json` live in `OPENPATH_DATA_DIR/ws/<id>/`, so no visitor can read, change or clear another's data. `OPENPATH_DATA_DIR` defaults to `.data` in the project. On Railway, mount a volume and point the variable at it.
+
+Files are written to a temporary name and then renamed, so a crash never leaves a half-written file. Each workspace keeps its latest 100 runs.
+
+Shared links work through a small index (`shares.json`) from a run's random id to its workspace. A shared run is read-only and does not include the internal score id.
+
+## Protection
+See [SECURITY.md](../SECURITY.md) for the full list: per-visitor workspaces, server-owned runs, input limits, rate limits, browser security headers, defenses against hostile notes, and how rules are kept as data.
 
 ## Feedback loop
 ```

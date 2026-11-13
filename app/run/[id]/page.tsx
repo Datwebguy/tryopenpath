@@ -2,46 +2,44 @@
 
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
-import type { EvalResult, Run } from "@/lib/types";
+import type { Run } from "@/lib/types";
 import DecisionCard from "../../components/DecisionCard";
 import Logo from "../../components/Logo";
 import PathGraph from "../../components/PathGraph";
 import ScoreCard from "../../components/ScoreCard";
 
+type Shared = Omit<Run, "evalId"> & { pending?: boolean };
+
 // A shared, read-only view of one run: its decision, its path and its score.
 export default function SharedRun({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const [run, setRun] = useState<Run | null>(null);
+  const [run, setRun] = useState<Shared | null>(null);
   const [missing, setMissing] = useState(false);
-  const [evalState, setEvalState] = useState<EvalResult | null>(null);
   const [elapsed, setElapsed] = useState(0);
 
+  // Load the run, and keep checking while its score is still coming in.
   useEffect(() => {
-    fetch(`/api/runs/${id}`).then(async (r) => {
-      if (!r.ok) return setMissing(true);
-      const data: Run = await r.json();
-      setRun(data);
-      setEvalState(data.eval ?? null);
-    });
-  }, [id]);
-
-  const evalId = run?.evalId ?? null;
-  const done = evalState?.status === "SETTLED" || evalState?.status === "FAILED";
-
-  useEffect(() => {
-    if (!evalId || done) return;
     let stop = false;
     let timer: ReturnType<typeof setTimeout>;
-    async function poll() {
-      const r = await (await fetch(`/api/evaluate/${evalId}`)).json();
-      if (stop || r.error) return;
-      setEvalState(r);
-      if (r.status === "PENDING") timer = setTimeout(poll, 5000);
+    async function load() {
+      const r = await fetch(`/api/runs/${id}`);
+      if (stop) return;
+      if (!r.ok) return setMissing(true);
+      const data: Shared = await r.json();
+      setRun(data);
+      if (data.pending) timer = setTimeout(load, 5000);
     }
-    poll();
+    load();
+    return () => { stop = true; clearTimeout(timer); };
+  }, [id]);
+
+  useEffect(() => {
+    if (!run?.pending) return;
     const tick = setInterval(() => setElapsed((s) => s + 1), 1000);
-    return () => { stop = true; clearTimeout(timer); clearInterval(tick); };
-  }, [evalId, done]);
+    return () => clearInterval(tick);
+  }, [run?.pending]);
+
+  const scored = run && (run.pending || run.eval);
 
   return (
     <>
@@ -71,7 +69,7 @@ export default function SharedRun({ params }: { params: Promise<{ id: string }> 
               <header className="card-head tight"><div><h2>Decision path</h2><p className="sub">Each step, who ran it, and what it found.</p></div></header>
               <PathGraph path={run.decision.path} ms={run.decision.ms} />
             </section>
-            {evalId && <ScoreCard evalId={evalId} state={evalState} message={null} elapsed={elapsed} />}
+            {scored && <ScoreCard evalId="shared" state={run.eval ?? { evalId: "shared", status: "PENDING" }} message={null} elapsed={elapsed} />}
           </div>
         )}
       </main>

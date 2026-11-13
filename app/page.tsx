@@ -110,12 +110,17 @@ export default function Home() {
     setResult(decision);
     setRunning(false);
 
-    // Hand the finished decision to Reppo for scoring.
-    const ev = await (await fetch("/api/evaluate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ case: c, decision }) })).json();
-    if (ev.error) setEvalMsg(ev.error);
-    else setEvalId(ev.evalId);
+    // The server saved this run. Ask for it to be scored by its id.
     const h = await loadHistory();
     setActiveAt(h[0]?.at);
+    try {
+      const ev = await (await fetch("/api/evaluate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ runId: decision.runId }) })).json();
+      if (ev.error) setEvalMsg(ev.error);
+      else setEvalId(ev.evalId);
+    } catch {
+      setEvalMsg("Scoring did not start just now. Run the case again to score it.");
+    }
+    await loadHistory();
   }
 
   async function clearHistory() {

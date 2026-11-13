@@ -1,5 +1,5 @@
 import { validateRules, type Rule } from "./rules";
-import { readJson, writeJson } from "./storage";
+import { readJson, wsFile, writeJson } from "./storage";
 
 export type Policy = {
   text: string; // plain-language policy, shown to the model and to Reppo
@@ -9,24 +9,31 @@ export type Policy = {
   rules: Rule[]; // your own rules, written in plain words and compiled by SERV
 };
 
-// No built-in policy. It exists only once the user has saved one.
-export function getPolicy(): Policy | null {
-  const p = readJson<Partial<Policy> | null>("policy.json", null);
+const file = (ws: string) => wsFile(ws, "policy.json");
+
+// No built-in policy. It exists only once the visitor has saved one.
+export function getPolicy(ws: string): Policy | null {
+  const p = readJson<Partial<Policy> | null>(file(ws), null);
   return p ? ({ rules: [], vendors: [], pos: [], ...p } as Policy) : null;
 }
 
-export function clearPolicy() {
-  writeJson("policy.json", null);
+export function clearPolicy(ws: string) {
+  writeJson(file(ws), null);
 }
 
-const list = (v: unknown): string[] =>
-  Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean) : [];
+const MAX_TEXT = 4000;
+const MAX_ITEMS = 200;
+const MAX_ITEM_LENGTH = 120;
 
-export function savePolicy(input: Partial<Policy>): { policy?: Policy; error?: string } {
+const list = (v: unknown): string[] =>
+  Array.isArray(v) ? v.slice(0, MAX_ITEMS).map((x) => String(x).trim().slice(0, MAX_ITEM_LENGTH)).filter(Boolean) : [];
+
+export function savePolicy(ws: string, input: Partial<Policy>): { policy?: Policy; error?: string } {
   const text = typeof input.text === "string" ? input.text.trim() : "";
   const limit = Number(input.limit);
   if (!text) return { error: "Policy text is required" };
-  if (!Number.isFinite(limit) || limit <= 0) return { error: "Spending limit must be above 0" };
+  if (text.length > MAX_TEXT) return { error: `Keep the policy under ${MAX_TEXT} characters.` };
+  if (!Number.isFinite(limit) || limit <= 0 || limit > 1e12) return { error: "Spending limit must be above 0" };
   const checked = validateRules(input.rules);
   if (checked.error) return { error: checked.error };
   const policy: Policy = {
@@ -36,6 +43,6 @@ export function savePolicy(input: Partial<Policy>): { policy?: Policy; error?: s
     vendors: list(input.vendors),
     pos: list(input.pos).map((p) => p.toUpperCase()),
   };
-  writeJson("policy.json", policy);
+  writeJson(file(ws), policy);
   return { policy };
 }
