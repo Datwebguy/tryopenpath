@@ -41,6 +41,7 @@ Primary sources for SERV Hackathon Edition 02 and the partner stacks.
 - Passport skills: https://docs.gokite.ai/reference/passport-skills
 - kpass CLI reference: https://docs.gokite.ai/reference/kpass-cli
 - Docs index: https://docs.gokite.ai/llms.txt
+- Reference implementation of `kpass` output handling: https://github.com/gnanam1990/kitepass-mcp
 - Reference repositories:
   - https://github.com/CarryWang/kite-x402-explorer
   - https://github.com/BrKDDD/kite-x402-hono

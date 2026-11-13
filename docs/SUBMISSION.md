@@ -13,9 +13,9 @@ Openpath is a console where anyone writes a policy for an AI agent and sees the 
 SERV Reasoning powers the judgment step. After the code checks clear a case, the policy, the case and any stored feedback go to SERV through `/v1/chat/completions` with a system prompt that asks for a structured JSON decision. The path labels every step as `code` or `model`, shows which model answered and how long it took, and records when a hard rule already decided the case so the model step is skipped. That gives the inspectable, bounded reasoning OpenServ describes with Graph Sharding: each step is separate, controlled and on the record.
 
 ## Partner usage
-- **Kite:** the `kpass` CLI adds identity and session spending-limit checks to the path.
+- **Kite:** the `kpass` CLI adds identity, per-transaction limit, remaining session budget and expiry checks to the path.
 - **Reppo:** every decision is submitted to the Evaluation API. The score, route, reason and rubric scores are stored and used on the next run of the same case, and the console shows the score change.
-- **Dolphin:** open-model inference for the judgment step, tried first when set up, with SERV Reasoning as the answering model otherwise.
+- **Dolphin:** open-model inference as an optional second choice for the judgment step, switchable to first with one setting.
 
 ## Real data throughout
 Policy text, spending limit, vendors and PO numbers come from the user. Scores come from Reppo. Decisions come from live model calls. History is stored on disk.

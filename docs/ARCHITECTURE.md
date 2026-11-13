@@ -45,13 +45,13 @@ A Next.js (App Router, TypeScript) application with one flow: policy and case, h
 ```
 
 ## Judgment providers
-`lib/judge.ts` tries Dolphin first when `DOLPHIN_API_KEY` and `DOLPHIN_MODEL` are set, then SERV Reasoning. `JUDGE_PROVIDER=serv` reverses the order. When a provider passes the step on, the path records which one and why.
+`lib/judge.ts` sends every judgment to SERV Reasoning first. When `DOLPHIN_API_KEY` and `DOLPHIN_MODEL` are set, Dolphin open models are the second choice. `JUDGE_PROVIDER=dolphin` reverses the order. When a provider passes the step on, the path records which one and why.
 
 ## Reppo
 `lib/reppo.ts` follows the Evaluation API guide at https://eval.reppo.xyz/agents.md. A decision is submitted with `taskType: "action"`, and the status moves from `QUEUED` and `PROCESSING` to `COMPLETED`. The score, route, reason and rubric scores are stored with the run.
 
 ## Kite Passport
-`lib/kite.ts` runs the `kpass` CLI with `--output json --no-interactive`. `kpass me` confirms identity, and `kpass agent:session list --status active` supplies the session limits. A session passes when its limits are readable and the amount fits inside them.
+`lib/kite.ts` runs the `kpass` CLI with `--output json --no-interactive`, because Kite publishes its Passport interface as a CLI. `kpass me` confirms identity. `kpass agent:session list --status active` (or `kpass user sessions --status active`) returns the active session with `max_amount_per_tx`, `max_total_amount`, `spent_total`, `reserved_total` and `expires_at`. The amount must fit the per-transaction limit and the budget left, and the session must not have expired. Errors arrive as JSON with a `hint`, which the path shows.
 
 ## Storage
 `lib/storage.ts` writes `policy.json` and `history.json` to `OPENPATH_DATA_DIR`, which defaults to `.data` in the project. On Railway, mount a volume and point the variable at it.

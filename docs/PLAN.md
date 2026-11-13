@@ -5,12 +5,12 @@
 - [x] Policy editor with plain text, spending limit, vendor and PO tags
 - [x] Case form with suggestions from the saved lists
 - [x] Hard rules as code: fields, spending limit, PO match, vendor list
-- [x] Judgment step through SERV Reasoning, with Dolphin as the first choice when set up
+- [x] Judgment step on SERV Reasoning, with Dolphin open models as an optional second choice
 - [x] Path graph with code and model steps, timings and skipped steps
 - [x] Reppo scoring with a live status and a per-dimension breakdown
 - [x] Stored history and feedback that carries into the next run
 - [x] Score change shown between runs
-- [x] Kite Passport identity and session-limit checks through `kpass`
+- [x] Kite Passport identity, per-transaction limit, remaining budget and expiry checks through `kpass`
 - [x] Light, responsive interface with motion
 - [x] README, `.env.example`, license and documentation
 

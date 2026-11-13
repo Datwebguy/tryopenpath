@@ -33,7 +33,7 @@ Nothing is built in. The policy text, spending limit, vendor list and PO list ar
 - **Kite:** verifiable identity and session spending limits in the path.
 - **Reppo:** real feedback turned into a measurable score change.
 - **Open:** SERV Reasoning powers the judgment step.
-- **Dolphin:** open-model inference for the judgment step.
+- **Dolphin:** optional open-model inference alongside SERV for the judgment step.
 
 ## Success looks like
 Anyone can open the console, write a policy, submit a case, read the full path, understand the decision, and see a second run that reflects the feedback.

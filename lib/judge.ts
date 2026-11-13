@@ -56,11 +56,12 @@ async function call(b: Backend, policy: string, c: Case, feedback?: string): Pro
   return out;
 }
 
-// Judgment node. Open model (Dolphin) first when configured, SERV catalog as fallback.
+// Judgment node. SERV Reasoning answers by default. Dolphin (open models) is the second choice,
+// or the first one when JUDGE_PROVIDER=dolphin.
 export async function judge(policy: string, c: Case, feedback?: string): Promise<Judged> {
-  const order = [dolphin(), serv()].filter((b) => b.key && b.model);
-  if (process.env.JUDGE_PROVIDER === "serv") order.sort((a) => (a.name === "serv" ? -1 : 1));
-  if (order.length === 0) throw new Error("Set an API key and model (SERV_API_KEY + SERV_MODEL, or DOLPHIN_API_KEY + DOLPHIN_MODEL)");
+  const order = [serv(), dolphin()].filter((b) => b.key && b.model);
+  if (process.env.JUDGE_PROVIDER === "dolphin") order.sort((a) => (a.name === "dolphin" ? -1 : 1));
+  if (order.length === 0) throw new Error("Set SERV_API_KEY and SERV_MODEL (or DOLPHIN_API_KEY and DOLPHIN_MODEL).");
 
   const errors: string[] = [];
   for (const b of order) {

@@ -13,7 +13,7 @@ Openpath is a console where anyone writes a policy for an AI agent, runs a case 
 1. Write a policy: plain language for the model, plus an exact spending limit, approved vendors and known PO numbers for the code checks.
 2. Submit a case: amount, vendor, invoice or PO number, and notes.
 3. Hard rules run as code. If a rule decides the case, the model step is skipped.
-4. The judgment step runs on an open model through Dolphin, or on SERV Reasoning.
+4. The judgment step runs on SERV Reasoning, with Dolphin open models available as a second choice.
 5. Kite Passport identity and session limits join the path when the `kpass` CLI is connected.
 6. The console shows the decision and the full path.
 7. Reppo's Evaluation API scores the decision. The score and critique are stored.

@@ -38,7 +38,7 @@ Openpath is a console for agent decisions. You describe a policy in plain langua
 1. **Write a policy.** Plain language for the model, plus an exact spending limit, approved vendors and known PO numbers for the code checks.
 2. **Run a case.** Enter an amount, vendor, PO number and notes.
 3. **Hard rules run first.** If a rule decides the case, the decision is made by code and the model step is skipped.
-4. **The model judges what is left.** Dolphin runs first when it is set up, and SERV Reasoning answers whenever Dolphin is not available.
+4. **SERV Reasoning judges what is left.** Dolphin open models are ready as a second choice, or can go first with one setting.
 5. **See the decision and its path.** Approve, deny or escalate, with a plain reason.
 6. **Reppo scores it.** Usually within 30 to 90 seconds.
 7. **Run it again.** The stored feedback is part of the next run, and the console shows the score change.
@@ -72,8 +72,8 @@ When a rule decides a case, the model is skipped and the path says exactly why.
 
 | Partner | Role in Openpath |
 |---|---|
-| **SERV Reasoning** (OpenServ) | Judgment step through `/v1/chat/completions`, with a system prompt on every request. Pick any chat model from the SERV catalog. |
-| **Dolphin** | Open-model inference for the judgment step. Runs first when `DOLPHIN_API_KEY` and `DOLPHIN_MODEL` are set. |
+| **SERV Reasoning** (OpenServ) | The core of Openpath. Every judgment goes through `/v1/chat/completions` with a system prompt, on any chat model from the SERV catalog. |
+| **Dolphin** | Open-model inference for the judgment step. Joins as the second choice when `DOLPHIN_API_KEY` and `DOLPHIN_MODEL` are set. |
 | **Reppo** | Scores every decision through the Evaluation API. Scores and critiques are stored and used on the next run. |
 | **Kite Passport** | Adds identity and session spending-limit checks to the path when the `kpass` CLI is connected. |
 
@@ -102,8 +102,8 @@ Open the console, write your first policy, and run a case.
 | Variable | Purpose |
 |---|---|
 | `SERV_API_KEY`, `SERV_MODEL` | SERV Reasoning key and the chat model id to use, for example `serv-mini`. |
-| `DOLPHIN_API_KEY`, `DOLPHIN_MODEL` | Optional. When both are set, Dolphin runs the judgment step first. |
-| `JUDGE_PROVIDER` | Set to `serv` to try SERV before Dolphin. |
+| `DOLPHIN_API_KEY`, `DOLPHIN_MODEL` | Optional. Adds Dolphin open models as the second choice for the judgment step. |
+| `JUDGE_PROVIDER` | Set to `dolphin` to try Dolphin before SERV. |
 | `REPPO_API_KEY` | Enables scoring and the feedback loop. |
 | `KPASS_BIN` | Optional. Path to the `kpass` CLI to add Kite Passport checks. |
 | `OPENPATH_DATA_DIR` | Where policy and history are stored. Defaults to `.data` in the project. |
@@ -122,7 +122,10 @@ kpass agent:session create --task-summary "Openpath invoice review" \
   --max-amount-per-tx 500 --max-total-amount 2000 --ttl 24h --assets USDC --payment-approach x402_http
 ```
 
-Then set `KPASS_BIN` to the `kpass` path. Every case now includes a `Kite identity` step and a `Kite session limit` step.
+Then set `KPASS_BIN` to the `kpass` path. Every case now includes two steps:
+
+- **Kite identity:** confirms the signed-in Passport user with `kpass me`.
+- **Kite session limit:** reads your active session and checks the amount against its per-transaction limit, the budget it has left (total minus spent and reserved), and its expiry.
 
 ## Deploy on Railway
 
@@ -146,7 +149,7 @@ app/
   api/status               Which integrations are active
 lib/
   checks.ts                Hard rules that run as code
-  judge.ts                 Judgment step (Dolphin first, SERV Reasoning)
+  judge.ts                 Judgment step (SERV Reasoning, with Dolphin as an option)
   reppo.ts                 Reppo Evaluation API client
   kite.ts                  Kite Passport checks through kpass
   policy.ts  history.ts    Saved policy and run history

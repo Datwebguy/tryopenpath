@@ -28,8 +28,8 @@ A console where anyone writes a policy, runs a case, and sees the exact path the
 - Environment variables for every key and model id
 
 ## Integrations
-- **SERV Reasoning:** `https://inference-api.openserv.ai/v1/chat/completions`, Bearer auth, a system prompt on every request.
-- **Dolphin:** `https://lighthouse.dphn.ai/run/text-v/v1/chat/completions`, OpenAI-compatible, first choice for the judgment step when set up.
+- **SERV Reasoning:** the core of the judgment step. `https://inference-api.openserv.ai/v1/chat/completions`, Bearer auth, a system prompt on every request.
+- **Dolphin:** `https://lighthouse.dphn.ai/run/text-v/v1/chat/completions`, OpenAI-compatible, the second choice for the judgment step (first with `JUDGE_PROVIDER=dolphin`).
 - **Reppo:** `https://eval.reppo.xyz/api/v1/agents/evals`, follow https://eval.reppo.xyz/agents.md.
 - **Kite Passport:** the `kpass` CLI with `--output json --no-interactive`.
 
