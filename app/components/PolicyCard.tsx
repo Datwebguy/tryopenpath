@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import type { Policy } from "@/lib/policy";
+import { describeRule, type Rule } from "@/lib/rules";
 import { money } from "@/lib/format";
-import { EditIcon, ShieldIcon } from "./Icons";
+import { EditIcon, ShieldIcon, SparkIcon, XIcon } from "./Icons";
 import TagInput from "./TagInput";
 
 type Props = {
@@ -19,6 +20,10 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
   const [limit, setLimit] = useState(policy ? String(policy.limit) : "");
   const [vendors, setVendors] = useState<string[]>(policy?.vendors ?? []);
   const [pos, setPos] = useState<string[]>(policy?.pos ?? []);
+  const [rules, setRules] = useState<Rule[]>(policy?.rules ?? []);
+  const [ruleText, setRuleText] = useState("");
+  const [compiling, setCompiling] = useState(false);
+  const [ruleError, setRuleError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -30,14 +35,34 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
       setLimit(String(policy.limit));
       setVendors(policy.vendors);
       setPos(policy.pos);
+      setRules(policy.rules ?? []);
     }
     setEditing(true);
+  }
+
+  async function addRule() {
+    if (!ruleText.trim() || compiling) return;
+    setCompiling(true);
+    setRuleError(null);
+    try {
+      const res = await fetch("/api/rules/compile", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: ruleText }) });
+      const out = await res.json();
+      if (out.rule) {
+        setRules((r) => [...r, out.rule]);
+        setRuleText("");
+      } else {
+        setRuleError(out.error ?? "That rule did not come through. Please try again.");
+      }
+    } catch {
+      setRuleError("That rule did not come through. Please try again.");
+    }
+    setCompiling(false);
   }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    const err = await onSave({ text, limit: Number(limit), vendors, pos });
+    const err = await onSave({ text, limit: Number(limit), vendors, pos, rules });
     setSaving(false);
     setError(err);
     if (!err) setEditing(false);
@@ -69,7 +94,15 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
             <div><dt>Spending limit</dt><dd>{money(policy.limit)}</dd></div>
             <div><dt>Approved vendors</dt><dd>{policy.vendors.length}</dd></div>
             <div><dt>Known POs</dt><dd>{policy.pos.length}</dd></div>
+            <div><dt>Your rules</dt><dd>{policy.rules?.length ?? 0}</dd></div>
           </dl>
+          {policy.rules?.length > 0 && (
+            <ul className="rule-list">
+              {policy.rules.map((r) => (
+                <li key={r.id}><b>{r.label}</b><span>{describeRule(r)}</span></li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 
@@ -90,6 +123,29 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
           </div>
           <TagInput label="Approved vendors" hint="Press Enter after each one." values={vendors} onChange={setVendors} placeholder="Add a vendor" />
           <TagInput label="Known PO numbers" hint="Press Enter after each one." values={pos} onChange={setPos} placeholder="Add a PO number" />
+          <div className="field">
+            <label className="label" htmlFor="newrule">Rules in your own words <span className="opt">optional</span></label>
+            {rules.map((r) => (
+              <div className="rule-card rise" key={r.id}>
+                <div className="rule-head">
+                  <b>{r.label}</b>
+                  <span className={`pill ${r.then === "deny" ? "fail" : "warn"}`}>{r.then === "deny" ? "Deny" : "Send to a person"}</span>
+                  <button type="button" className="rule-x" aria-label={`Remove ${r.label}`} onClick={() => setRules(rules.filter((x) => x.id !== r.id))}><XIcon width={14} height={14} /></button>
+                </div>
+                <p className="rule-said">“{r.text}”</p>
+                <p className="rule-how"><SparkIcon width={13} height={13} /> {describeRule(r)}</p>
+              </div>
+            ))}
+            <div className="rule-add">
+              <input id="newrule" value={ruleText} onChange={(e) => setRuleText(e.target.value)} placeholder="Describe a rule"
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addRule(); } }} />
+              <button type="button" className="btn secondary" disabled={compiling || !ruleText.trim()} onClick={addRule}>
+                {compiling ? <><span className="spinner dark" /> Writing…</> : "Add with SERV"}
+              </button>
+            </div>
+            {ruleError && <p className="notice info" role="status">{ruleError}</p>}
+            <p className="hint">SERV Reasoning turns your sentence into an exact rule. You see it before you save, and it runs the same way every time.</p>
+          </div>
           {error && <p className="notice err" role="alert">{error}</p>}
           <div className="row">
             <button className="btn primary" disabled={saving}>{saving ? "Saving…" : policy ? "Save changes" : "Save policy"}</button>

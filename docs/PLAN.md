@@ -11,6 +11,8 @@
 - [x] Stored history and feedback that carries into the next run
 - [x] Score change shown between runs
 - [x] Kite Passport identity, per-transaction limit, remaining budget and expiry checks through `kpass`
+- [x] Rules in your own words, written as exact rules by SERV Reasoning
+- [x] Shareable run links and a score trend for repeated cases
 - [x] Light, responsive interface with motion
 - [x] README, `.env.example`, license and documentation
 

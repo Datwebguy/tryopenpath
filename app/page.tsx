@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { caseKey } from "@/lib/case";
-import { duration } from "@/lib/format";
 import type { Policy } from "@/lib/policy";
 import type { Case, Decision, EvalResult, Run } from "@/lib/types";
 import CaseForm, { type Draft } from "./components/CaseForm";
 import History from "./components/History";
-import { AlertIcon, CheckIcon, RepeatIcon, XIcon } from "./components/Icons";
+import { AlertIcon, RepeatIcon } from "./components/Icons";
+import DecisionCard from "./components/DecisionCard";
+import Trend from "./components/Trend";
 import Integrations, { type Status } from "./components/Integrations";
 import Logo from "./components/Logo";
 import PathGraph, { PathSkeleton } from "./components/PathGraph";
@@ -39,6 +40,7 @@ export default function Home() {
   const [evalState, setEvalState] = useState<EvalResult | null>(null);
   const [evalMsg, setEvalMsg] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  const [copied, setCopied] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const loadHistory = useCallback(async () => {
@@ -154,10 +156,28 @@ export default function Home() {
     ? history.find((r) => r.caseKey === key && r.at < activeAt && r.eval?.status === "SETTLED")?.eval?.score
     : undefined;
 
+  const trend = key
+    ? history
+        .filter((r) => r.caseKey === key && r.eval?.status === "SETTLED" && r.eval.score !== undefined)
+        .map((r) => ({ score: r.eval!.score as number, at: r.at }))
+        .sort((x, y) => x.at.localeCompare(y.at))
+    : [];
+
+  async function share() {
+    const id = history.find((r) => r.at === activeAt)?.id;
+    if (!id) return;
+    const url = `${window.location.origin}/run/${id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      window.prompt("Copy this link", url);
+    }
+  }
+
   const settled = evalState?.status === "SETTLED";
   const done = !policy ? 0 : !result ? 1 : settled ? (previous !== undefined ? 5 : 4) : 3;
-
-  const decisionTone = result?.decision === "approve" ? "pass" : result?.decision === "deny" ? "fail" : "warn";
 
   return (
     <>
@@ -195,19 +215,7 @@ export default function Home() {
 
             {result && !running && (
               <>
-                <section className={`card decision-card ${decisionTone} rise`}>
-                  <div className="decision-top">
-                    <span className={`decision-badge ${decisionTone}`}>
-                      {result.decision === "approve" ? <CheckIcon width={22} height={22} /> : result.decision === "deny" ? <XIcon width={22} height={22} /> : <AlertIcon width={22} height={22} />}
-                    </span>
-                    <div>
-                      <p className="eyebrow">Decision</p>
-                      <h2 className="decision-word">{result.decision}</h2>
-                    </div>
-                    {result.ms !== undefined && <span className="decided-in">Decided in {duration(result.ms)}</span>}
-                  </div>
-                  <p className="decision-reason">{result.reason}</p>
-                </section>
+                <DecisionCard result={result} />
 
                 <section className="card rise">
                   <header className="card-head tight"><div><h2>Decision path</h2><p className="sub">Each step, who ran it, and what it found.</p></div></header>
@@ -216,10 +224,17 @@ export default function Home() {
 
                 <ScoreCard evalId={evalId} state={evalState} message={evalMsg} previous={previous} elapsed={elapsed} />
 
+                <Trend points={trend} />
+
                 {current && (
-                  <button className="btn secondary lg rerun" onClick={() => run(current)} disabled={running}>
-                    <RepeatIcon width={17} height={17} /> Run again with feedback
-                  </button>
+                  <div className="actions">
+                    <button className="btn secondary lg rerun" onClick={() => run(current)} disabled={running}>
+                      <RepeatIcon width={17} height={17} /> Run again with feedback
+                    </button>
+                    <button className="btn ghost lg" onClick={share} disabled={!activeAt}>
+                      {copied ? "Link copied" : "Share this run"}
+                    </button>
+                  </div>
                 )}
               </>
             )}

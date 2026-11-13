@@ -10,6 +10,7 @@ export type Step = {
   type: "code" | "model";
   result: string;
   detail?: string;
+  label?: string; // display name for steps that are not built in, such as your own rules
   provider?: string; // which model answered a model step
   ms?: number; // how long the step took
 };
@@ -34,6 +35,7 @@ export type EvalResult = {
 };
 
 export type Run = {
+  id: string;
   caseKey: string;
   case: Case;
   decision: Decision;

@@ -1,3 +1,4 @@
+import { validateRules, type Rule } from "./rules";
 import { readJson, writeJson } from "./storage";
 
 export type Policy = {
@@ -5,10 +6,14 @@ export type Policy = {
   limit: number; // spending limit in USD (Kite limit)
   vendors: string[]; // approved vendor list
   pos: string[]; // known PO numbers
+  rules: Rule[]; // your own rules, written in plain words and compiled by SERV
 };
 
 // No built-in policy. It exists only once the user has saved one.
-export const getPolicy = (): Policy | null => readJson<Policy | null>("policy.json", null);
+export function getPolicy(): Policy | null {
+  const p = readJson<Partial<Policy> | null>("policy.json", null);
+  return p ? ({ rules: [], vendors: [], pos: [], ...p } as Policy) : null;
+}
 
 export function clearPolicy() {
   writeJson("policy.json", null);
@@ -22,9 +27,12 @@ export function savePolicy(input: Partial<Policy>): { policy?: Policy; error?: s
   const limit = Number(input.limit);
   if (!text) return { error: "Policy text is required" };
   if (!Number.isFinite(limit) || limit <= 0) return { error: "Spending limit must be above 0" };
+  const checked = validateRules(input.rules);
+  if (checked.error) return { error: checked.error };
   const policy: Policy = {
     text,
     limit,
+    rules: checked.rules ?? [],
     vendors: list(input.vendors),
     pos: list(input.pos).map((p) => p.toUpperCase()),
   };

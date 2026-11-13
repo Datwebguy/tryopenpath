@@ -19,8 +19,10 @@ A Next.js (App Router, TypeScript) application with one flow: policy and case, h
 | `POST /api/decide` | Runs the hard checks, loads stored feedback, calls the judgment step when needed, and returns the decision and path. |
 | `POST /api/evaluate` | Submits a finished decision to Reppo as an `action` and stores the run. |
 | `GET /api/evaluate/:evalId` | Reads the Reppo evaluation and stores the settled score on the run. |
-| `GET` / `PUT /api/policy` | Reads and saves the policy. |
-| `GET /api/history` | Lists saved runs. |
+| `GET` / `PUT /api/policy` | Reads and saves the policy, including your rules. `DELETE` removes it. |
+| `GET /api/history` | Lists saved runs. `DELETE` clears them. |
+| `GET /api/runs/:id` | One saved run, used by the shared run page at `/run/:id`. |
+| `POST /api/rules/compile` | Turns one plain-language rule into a structured rule with SERV Reasoning. |
 | `GET /api/status` | Reports which integrations are active, as yes or no values only. |
 
 ## Steps in a path
@@ -28,8 +30,9 @@ A Next.js (App Router, TypeScript) application with one flow: policy and case, h
 2. `policy_spending_limit`: amount against your limit.
 3. `po_match` and `vendor_allowlist`: against your saved lists.
 4. `kite_identity` and `kite_session_limit`: added when `KPASS_BIN` is set.
-5. `load_feedback`: the stored Reppo score for the same case.
-6. `model_judgment`: skipped when a rule already decided the case.
+5. Your own rules, one step each. A rule that matches denies the case or sends it to a person.
+6. `load_feedback`: the stored Reppo score for the same case.
+7. `model_judgment`: skipped when a rule already decided the case.
 
 ```json
 {
@@ -46,6 +49,11 @@ A Next.js (App Router, TypeScript) application with one flow: policy and case, h
 
 ## Judgment
 `lib/judge.ts` sends every judgment to SERV Reasoning through chat completions, with a system prompt on every request. The answer is structured JSON: approve or escalate, with a reason. The path records which SERV model answered and how long it took. If SERV does not answer, the case is escalated to a person.
+
+## Rules in your own words
+`lib/compile.ts` sends one sentence to SERV Reasoning and gets back a structured rule: a list of conditions over a fixed set of fields (`amount`, `vendor`, `invoiceNumber`, `notes`, `weekday`, `earlierRuns`), an outcome (`deny` or `escalate`) and a reason. The compiler accepts the common ways a model words a rule, asks once more if an answer is incomplete, and reports what is missing when a sentence needs information Openpath does not have.
+
+`lib/rules.ts` validates every rule against exact lists of fields and operators and evaluates it as data, never as code. The same file writes the plain-language description shown next to each rule.
 
 ## Reppo
 `lib/reppo.ts` follows the Evaluation API guide at https://eval.reppo.xyz/agents.md. A decision is submitted with `taskType: "action"`, and the status moves from `QUEUED` and `PROCESSING` to `COMPLETED`. The score, route, reason and rubric scores are stored with the run.

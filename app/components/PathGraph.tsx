@@ -59,7 +59,7 @@ export default function PathGraph({ path, ms }: { path: Step[]; ms?: number }) {
                 <span className={`node-icon ${s.type}`}>{s.type === "code" ? <CodeIcon width={16} height={16} /> : <SparkIcon width={16} height={16} />}</span>
                 <div className="node-body">
                   <div className="node-head">
-                    <span className="node-name">{stepLabel(s.step)}</span>
+                    <span className="node-name">{s.label ?? stepLabel(s.step)}</span>
                     <span className={`pill ${t}`}><ToneIcon t={t} /> {resultLabel(s.result)}</span>
                   </div>
                   <div className="node-meta">

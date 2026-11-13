@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { runCodeChecks } from "@/lib/checks";
 import { caseKey } from "@/lib/case";
-import { latestScored } from "@/lib/history";
+import { routeLabel, stepLabel, verdictLabel } from "@/lib/format";
+import { latestScored, vendorRunCount } from "@/lib/history";
 import { judge } from "@/lib/judge";
 import { kiteChecks } from "@/lib/kite";
 import { getPolicy } from "@/lib/policy";
-import { routeLabel, stepLabel, verdictLabel } from "@/lib/format";
-import type { Case, Decision } from "@/lib/types";
+import { describeCond, ruleMatches, type RuleContext } from "@/lib/rules";
+import type { Case, Decision, Step } from "@/lib/types";
+
+const name = (s: Step) => s.label ?? stepLabel(s.step);
 
 export async function POST(req: Request) {
   const started = Date.now();
@@ -31,28 +34,46 @@ export async function POST(req: Request) {
     : undefined;
 
   const path = [...runCodeChecks(c, policy), ...(await kiteChecks(c))];
+
+  // Your own rules, written in plain words and compiled by SERV.
+  const ctx: RuleContext = {
+    ...c,
+    weekday: new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" }).toLowerCase(),
+    earlierRuns: vendorRunCount(c.vendor),
+  };
+  for (const rule of policy.rules) {
+    const hit = ruleMatches(rule, ctx);
+    path.push({
+      step: `rule_${rule.id}`,
+      label: rule.label,
+      type: "code",
+      result: hit ? (rule.then === "deny" ? "failed" : "escalate") : "passed",
+      detail: hit ? rule.reason : `Does not apply to this case. It applies when ${describeCond(rule.when)}.`,
+    });
+  }
+
   path.push({
     step: "load_feedback",
     type: "code",
     result: prior ? `previous score ${prior.score}/100` : "first run",
     detail: prior ? `${verdictLabel(prior.verdict ?? "")} · ${routeLabel(prior.route ?? "")}` : undefined,
   });
-  const failed = path.filter((s) => s.result === "failed");
 
-  // A hard rule failed: the decision is made by code, so the model is not called.
-  if (failed.length > 0) {
+  const failed = path.filter((s) => s.result === "failed");
+  const sentUp = path.filter((s) => s.step.startsWith("rule_") && s.result === "escalate");
+
+  // A rule already decided this case, so the AI judgment is not needed.
+  if (failed.length > 0 || sentUp.length > 0) {
     path.push({
       step: "model_judgment",
       type: "model",
       result: "skipped",
       detail: "A rule already decided this case, so the AI judgment was not needed.",
     });
-    const out: Decision = {
-      decision: "deny",
-      reason: `Denied by rule: ${failed.map((s) => stepLabel(s.step).toLowerCase()).join(", ")}`,
-      path,
-      ms: Date.now() - started,
-    };
+    const out: Decision =
+      failed.length > 0
+        ? { decision: "deny", reason: `Denied by rule: ${failed.map((s) => name(s).toLowerCase()).join(", ")}`, path, ms: Date.now() - started }
+        : { decision: "escalate", reason: `Sent to a person by rule: ${sentUp.map((s) => name(s).toLowerCase()).join(", ")}`, path, ms: Date.now() - started };
     return NextResponse.json(out);
   }
 

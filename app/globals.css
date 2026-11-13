@@ -120,8 +120,8 @@ textarea { resize: vertical; }
 
 /* Policy view */
 .policy-view blockquote { margin: 0 0 16px; padding: 14px 16px; background: #f8f9fd; border-left: 4px solid var(--brand); border-radius: 0 12px 12px 0; color: #25304a; }
-.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0; }
-.facts div { background: #f8f9fd; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); gap: 8px; margin: 0; }
+.facts div { background: #f8f9fd; border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
 .facts dt { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
 .facts dd { margin: 2px 0 0; font-weight: 700; font-size: 1.05rem; }
 
@@ -229,3 +229,29 @@ textarea { resize: vertical; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
+/* Rules in your own words */
+.rule-card { border: 1px solid #d9dcf8; background: #fafaff; border-radius: 13px; padding: 12px 14px; display: grid; gap: 4px; }
+.rule-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rule-head b { flex: 1; min-width: 120px; }
+.rule-x { border: 0; background: transparent; color: var(--faint); padding: 4px; border-radius: 8px; display: grid; place-items: center; }
+.rule-x:hover { background: #eef0f6; color: var(--fail); }
+.rule-said { color: var(--muted); font-size: 0.86rem; font-style: italic; }
+.rule-how { display: flex; gap: 6px; align-items: flex-start; font-size: 0.86rem; color: #25304a; }
+.rule-how svg { color: var(--model); margin-top: 3px; flex: none; }
+.rule-add { display: flex; gap: 8px; }
+.rule-add input { flex: 1; min-width: 0; }
+.rule-add .btn { white-space: nowrap; }
+.rule-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+.rule-list li { display: grid; gap: 2px; padding: 10px 12px; background: #fafaff; border: 1px solid #e2e5fa; border-radius: 12px; font-size: 0.88rem; }
+.rule-list li span { color: var(--muted); }
+.spinner.dark { border-color: rgba(67, 56, 202, 0.25); border-top-color: var(--brand); }
+
+/* Actions and shared run */
+.actions { display: grid; gap: 10px; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .actions { grid-template-columns: 1fr 1fr; } }
+.share { max-width: 760px; padding-top: 28px; padding-bottom: 20px; }
+.share .card:not(.decision-card) h2 { text-transform: none; }
+a.brand, a.btn { text-decoration: none; color: inherit; }
+a.btn.primary { color: #fff; }
+a.btn.secondary { color: var(--brand); }

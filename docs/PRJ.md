@@ -11,13 +11,14 @@ Openpath is a console where anyone writes a policy for an AI agent, runs a case 
 
 ## The core loop
 1. Write a policy: plain words for the AI, plus an exact spending limit, approved vendors and known PO numbers.
-2. Submit a case: amount, vendor, invoice or PO number, and notes.
-3. Fixed rules run first. If a rule decides the case, the AI step is skipped.
-4. The judgment step runs on SERV Reasoning.
-5. Kite Passport identity and session limits join the path when the `kpass` CLI is connected.
-6. The console shows the decision and the full path.
-7. Reppo's Evaluation API scores the decision. The score and critique are stored.
-8. Running the same case again carries that feedback forward and shows the score change.
+2. Optionally add rules in plain sentences. SERV Reasoning turns each one into an exact rule.
+3. Submit a case: amount, vendor, invoice or PO number, and notes.
+4. Fixed rules run first. If a rule decides the case, the AI step is skipped.
+5. The judgment step runs on SERV Reasoning.
+6. Kite Passport identity and session limits join the path when the `kpass` CLI is connected.
+7. The console shows the decision and the full path, and any run can be shared with a link.
+8. Reppo's Evaluation API scores the decision. The score and critique are stored.
+9. Running the same case again carries that feedback forward, shows the score change, and adds a point to the score chart.
 
 ## Why it fits OpenServ's direction
 - It maps a workflow into explicit steps and shows why every decision happened.

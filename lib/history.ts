@@ -19,6 +19,11 @@ export function setEval(evalId: string, result: EvalResult) {
   save(runs);
 }
 
+export const vendorRunCount = (vendor: string) =>
+  load().filter((r) => r.case.vendor.trim().toLowerCase() === vendor.trim().toLowerCase()).length;
+
+export const findRun = (id: string) => load().find((r) => r.id === id);
+
 export function clearRuns() {
   const n = load().length;
   save([]);

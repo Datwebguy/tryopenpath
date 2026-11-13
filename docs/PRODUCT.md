@@ -26,13 +26,19 @@ You write the rules once and run a case. You see which steps were fixed rules, w
 - Identity and session limits from Kite Passport when connected.
 - Reppo scoring that feeds the next run.
 
+## Rules in your own words
+Beyond the spending limit, vendor list and PO list, you can write rules as sentences, such as "send anything over 1000 dollars from a vendor we have not used before to review". SERV Reasoning turns each one into an exact rule, shows how it understood it, and the rule then runs the same way on every case.
+
+## Share and compare
+Every run has a link that opens a read-only page with the decision, the path and the score. A chart shows how the score moved across runs of the same case.
+
 ## Your data, your rules
 Nothing is built in. The policy text, spending limit, vendor list and PO list are all yours. The case form suggests values from the lists you saved.
 
 ## Tracks
 - **Kite:** verifiable identity and session spending limits in the path.
 - **Reppo:** real feedback turned into a measurable score change.
-- **Open:** SERV Reasoning powers the judgment step.
+- **Open:** SERV Reasoning writes your rules from plain sentences and powers the judgment step.
 
 ## Success looks like
 Anyone can open the console, write a policy, submit a case, read the full path, understand the decision, and see a second run that reflects the feedback.

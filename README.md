@@ -12,7 +12,7 @@
 <h3 align="center">Write your policy once. Run a case. See every step of the decision, scored and ready to improve the next run.</h3>
 
 <p align="center">
-  <img src="docs/images/06-rerun-feedback.png" alt="Openpath console showing an approved decision, its full path, and a Reppo score of 99" width="100%">
+  <img src="docs/images/06-rerun-feedback.png" alt="Openpath console showing an approved decision, its full path, a Reppo score, and the score across runs" width="100%">
 </p>
 
 ---
@@ -23,11 +23,13 @@ Openpath is a console for AI decisions. You describe a policy in plain words, se
 
 | | |
 |---|---|
+| **Rules in your own words** | Write a rule as a sentence. SERV Reasoning turns it into an exact rule you can read, and it runs the same way every time. |
 | **Fixed rules, checked exactly** | Spending limits, PO numbers, vendor lists and required fields are checked the same way every time. Same case, same answer. |
 | **AI judgment where it counts** | The AI steps in only for what needs judgment, such as reading the notes for anything unusual. |
 | **Every step on record** | Each step is labeled Rule or AI, with its result, its timing, and which AI answered. |
 | **Scored by Reppo** | Independent evaluators score each decision and explain why. |
 | **Feedback that sticks** | The score and critique are saved and shape the next run of the same case, so you see the improvement. |
+| **Shareable runs** | Send a link to any run. It opens a read-only page with the decision, the path and the live score. |
 
 ## How it works
 
@@ -36,19 +38,22 @@ Openpath is a console for AI decisions. You describe a policy in plain words, se
 </p>
 
 1. **Write a policy.** Plain words for the AI, plus an exact spending limit, approved vendors and known PO numbers.
-2. **Run a case.** Enter an amount, vendor, PO number and notes.
-3. **Fixed rules run first.** If a rule decides the case, the decision is made right there and the AI step is skipped.
-4. **SERV Reasoning judges the rest.** It reads the notes against your policy and answers approve or escalate, with a plain reason.
-5. **See the decision and its path.** Approve, deny or escalate, with a plain reason.
-6. **Reppo scores it.** Usually within 30 to 90 seconds.
-7. **Run it again.** The saved feedback joins the next run, and the console shows how the score changed.
+2. **Add rules in your own words.** Optional. SERV Reasoning turns each sentence into an exact rule and shows you how it understood it.
+3. **Run a case.** Enter an amount, vendor, PO number and notes.
+4. **Fixed rules run first.** Yours and the built-in ones. If a rule decides the case, the decision is made right there and the AI step is skipped.
+5. **SERV Reasoning judges the rest.** It reads the notes against your policy and answers approve or escalate, with a plain reason.
+6. **See the decision and its path.** Approve, deny or escalate, with a plain reason.
+7. **Reppo scores it.** Usually within 30 to 90 seconds.
+8. **Run it again, or share it.** The saved feedback joins the next run, and the console shows how the score changed. Share any run with a link.
 
 ## A tour of the console
 
-### Start with a policy
-Vendor and PO lists are quick to build. Everything you save is yours, so the console starts from your rules.
+### Start with a policy, then add rules in your own words
+Vendor and PO lists are quick to build. Everything you save is yours. Write a rule as a sentence and SERV Reasoning turns it into an exact rule, shown in plain language before you save.
 
-<p align="center"><img src="docs/images/02-policy.png" alt="Policy editor with plain-language text, a spending limit, and vendor and PO tags" width="92%"></p>
+<p align="center"><img src="docs/images/02-policy.png" alt="Policy editor with vendor and PO tags and two rules written in plain words, each shown with how SERV understood it" width="60%"></p>
+
+Rules can use the amount, the vendor, the PO number, the notes, the day of the week, and how many earlier runs the vendor has. Each rule can deny a case or send it to a person.
 
 ### Watch the path unfold
 Rule checks and AI judgment look different at a glance. The AI step shows which model answered and how long it took.
@@ -60,10 +65,24 @@ Reppo returns an overall score, a route, a written reason, and a breakdown per d
 
 <p align="center"><img src="docs/images/04-score.png" alt="Reppo score card with a ring chart and per-dimension bars" width="92%"></p>
 
-### Rules can decide on their own
-When a rule decides a case, the AI step is skipped and the path says exactly why.
+### Your rules can decide a case
+Here a rule written in plain words sends a first-time vendor's large invoice to a person. The AI step is skipped, and the path says exactly why.
+
+<p align="center"><img src="docs/images/08-rule-decides.png" alt="An escalated decision made by a plain-language rule, with the AI judgment skipped" width="92%"></p>
+
+Built-in checks decide on their own too, such as a spending limit:
 
 <p align="center"><img src="docs/images/05-denied-by-rule.png" alt="A denied decision where the AI judgment is skipped" width="92%"></p>
+
+### Watch the score move
+Run the same case again and the saved feedback joins the next run. The chart shows how the score moved across runs, using real scores only.
+
+<p align="center"><img src="docs/images/10-trend.png" alt="Score across runs of the same case" width="80%"></p>
+
+### Share a run
+Every run has a link. It opens a read-only page with the decision, the path and the score.
+
+<p align="center"><img src="docs/images/09-shared-run.png" alt="A shared run page" width="70%"></p>
 
 ### Built for your phone too
 <p align="center"><img src="docs/images/07-mobile.png" alt="Openpath on a phone" width="300"></p>
@@ -72,7 +91,7 @@ When a rule decides a case, the AI step is skipped and the path says exactly why
 
 | Partner | Role in Openpath |
 |---|---|
-| **SERV Reasoning** (OpenServ) | The core of Openpath. Every AI judgment runs on SERV Reasoning, using any chat model from the SERV catalog. |
+| **SERV Reasoning** (OpenServ) | The core of Openpath. It writes your plain-language rules as exact rules, and it makes every AI judgment, using any chat model from the SERV catalog. |
 | **Reppo** | Scores every decision. Scores and critiques are saved and used on the next run. |
 | **Kite Passport** | Adds identity and session spending-limit checks to the path once `kpass` is connected. |
 
@@ -100,6 +119,7 @@ Open the console, write your first policy, and run a case.
 | Variable | Purpose |
 |---|---|
 | `SERV_API_KEY`, `SERV_MODEL` | Your SERV key and the model to use, for example `serv-mini`. |
+| `SERV_RULES_MODEL` | Optional. A different SERV model for turning rule sentences into rules. Defaults to `SERV_MODEL`. |
 | `REPPO_API_KEY` | Enables scoring and the feedback loop. |
 | `KPASS_BIN` | Optional. Where `kpass` is installed, to add Kite Passport checks. |
 | `OPENPATH_DATA_DIR` | Where your policy and history are saved. Defaults to `.data` in the project. |
