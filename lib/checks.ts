@@ -9,13 +9,13 @@ export function runCodeChecks(c: Case, policy: Policy): Step[] {
   const fieldsOk = Number.isFinite(c.amount) && c.amount > 0 && !!c.vendor && !!c.invoiceNumber;
   steps.push({ step: "parse_case", type: "code", result: fieldsOk ? "ok" : "failed" });
 
-  // Kite stub: spending limit check. Swap for a real Kite Passport check later.
+  // The spending limit you set in the policy. Kite Passport limits are checked separately.
   const underLimit = c.amount <= limit;
   steps.push({
-    step: "kite_spending_limit",
+    step: "policy_spending_limit",
     type: "code",
     result: underLimit ? "passed" : "failed",
-    detail: `amount ${c.amount} vs limit ${limit} (stubbed Kite check)`,
+    detail: `amount ${c.amount} vs policy limit ${limit}`,
   });
 
   const poKnown = policy.pos.includes(c.invoiceNumber.trim().toUpperCase());

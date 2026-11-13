@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { runCodeChecks } from "@/lib/checks";
 import { caseKey, latestScored } from "@/lib/history";
+import { kiteChecks } from "@/lib/kite";
 import { judge } from "@/lib/judge";
 import { getPolicy } from "@/lib/policy";
 import type { Case, Decision } from "@/lib/types";
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
 
   const policy = getPolicy();
   if (!policy) return NextResponse.json({ error: "No policy set. Save a policy first." }, { status: 400 });
-  const path = runCodeChecks(c, policy);
+  const path = [...runCodeChecks(c, policy), ...(await kiteChecks(c))];
   path.push({
     step: "load_feedback",
     type: "code",
