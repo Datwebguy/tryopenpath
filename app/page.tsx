@@ -101,6 +101,7 @@ export default function Home() {
               <span className={`tag ${s.type}`}>{s.type}</span>
               <span>
                 {s.step}: <strong>{s.result}</strong>
+                {s.provider && <div className="detail">via {s.provider}</div>}
                 {s.detail && <div className="detail">{s.detail}</div>}
               </span>
             </div>

@@ -10,6 +10,7 @@ export type Step = {
   type: "code" | "model";
   result: string;
   detail?: string;
+  provider?: string;
 };
 
 export type Decision = {

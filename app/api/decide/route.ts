@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { runCodeChecks } from "@/lib/checks";
 import { caseKey, latestScored } from "@/lib/history";
-import { judge } from "@/lib/serv";
+import { judge } from "@/lib/judge";
 import type { Case, Decision } from "@/lib/types";
 
 export async function POST(req: Request) {
@@ -42,7 +42,13 @@ export async function POST(req: Request) {
 
   try {
     const j = await judge(c, feedback);
-    path.push({ step: "model_judgment", type: "model", result: j.decision, detail: j.reason });
+    path.push({
+      step: "model_judgment",
+      type: "model",
+      result: j.decision,
+      detail: j.reason,
+      provider: j.provider,
+    });
     return NextResponse.json({ decision: j.decision, reason: j.reason, path } satisfies Decision);
   } catch (e) {
     path.push({ step: "model_judgment", type: "model", result: "error", detail: String(e) });
