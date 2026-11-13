@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { runCodeChecks } from "@/lib/checks";
 import { caseKey, latestScored } from "@/lib/history";
 import { judge } from "@/lib/judge";
+import { getPolicy } from "@/lib/policy";
 import type { Case, Decision } from "@/lib/types";
 
 export async function POST(req: Request) {
@@ -20,7 +21,8 @@ export async function POST(req: Request) {
       (prior.critiques ?? []).map((k) => `${k.criterion}: ${k.critique}`).join(" ")
     : undefined;
 
-  const path = runCodeChecks(c);
+  const policy = getPolicy();
+  const path = runCodeChecks(c, policy);
   path.push({
     step: "load_feedback",
     type: "code",
@@ -41,7 +43,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const j = await judge(c, feedback);
+    const j = await judge(policy.text, c, feedback);
     path.push({
       step: "model_judgment",
       type: "model",

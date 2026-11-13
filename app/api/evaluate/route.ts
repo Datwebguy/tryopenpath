@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { addRun, caseKey } from "@/lib/history";
-import { POLICY_TEXT } from "@/lib/policy";
+import { getPolicy } from "@/lib/policy";
 import { reppoConfigured, submitEval } from "@/lib/reppo";
 import type { Case, Decision, Run } from "@/lib/types";
 
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    run.evalId = await submitEval(POLICY_TEXT, c, decision);
+    run.evalId = await submitEval(getPolicy().text, c, decision);
     addRun(run);
     return NextResponse.json({ evalId: run.evalId });
   } catch (e) {

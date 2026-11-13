@@ -1,4 +1,3 @@
-import { POLICY_TEXT } from "./policy";
 import type { Case } from "./types";
 
 const SYSTEM_PROMPT = `You are Openpath, a policy enforcement agent.
@@ -26,7 +25,7 @@ const serv = (): Backend => ({
   model: process.env.SERV_MODEL ?? "gpt-5-mini",
 });
 
-async function call(b: Backend, c: Case, feedback?: string): Promise<ModelJudgment> {
+async function call(b: Backend, policy: string, c: Case, feedback?: string): Promise<ModelJudgment> {
   const res = await fetch(b.url, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${b.key}` },
@@ -37,7 +36,7 @@ async function call(b: Backend, c: Case, feedback?: string): Promise<ModelJudgme
         {
           role: "user",
           content:
-            `Policy: ${POLICY_TEXT}\nCase: ${JSON.stringify(c)}` +
+            `Policy: ${policy}\nCase: ${JSON.stringify(c)}` +
             (feedback
               ? `\nA previous run of this same case was scored. Address this feedback:\n${feedback}`
               : ""),
@@ -58,7 +57,7 @@ async function call(b: Backend, c: Case, feedback?: string): Promise<ModelJudgme
 }
 
 // Judgment node. Open model (Dolphin) first when configured, SERV catalog as fallback.
-export async function judge(c: Case, feedback?: string): Promise<Judged> {
+export async function judge(policy: string, c: Case, feedback?: string): Promise<Judged> {
   const order = [dolphin(), serv()].filter((b) => b.key);
   if (process.env.JUDGE_PROVIDER === "serv") order.sort((a) => (a.name === "serv" ? -1 : 1));
   if (order.length === 0) throw new Error("No SERV_API_KEY or DOLPHIN_API_KEY set");
@@ -66,7 +65,7 @@ export async function judge(c: Case, feedback?: string): Promise<Judged> {
   const errors: string[] = [];
   for (const b of order) {
     try {
-      const out = await call(b, c, feedback);
+      const out = await call(b, policy, c, feedback);
       return { ...out, provider: `${b.name} (${b.model})` };
     } catch (e) {
       errors.push(String(e));

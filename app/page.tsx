@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { POLICY_TEXT } from "@/lib/policy";
+import type { Policy } from "@/lib/policy";
 import type { Case, Decision, EvalResult, Run } from "@/lib/types";
 
 export default function Home() {
@@ -12,6 +12,9 @@ export default function Home() {
   const [evalState, setEvalState] = useState<EvalResult | null>(null);
   const [evalError, setEvalError] = useState<string | null>(null);
   const [history, setHistory] = useState<Run[]>([]);
+  const [policy, setPolicy] = useState<Policy | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const loadHistory = useCallback(async () => {
     setHistory(await (await fetch("/api/history")).json());
@@ -19,7 +22,27 @@ export default function Home() {
 
   useEffect(() => {
     loadHistory();
+    fetch("/api/policy").then((r) => r.json()).then(setPolicy);
   }, [loadHistory]);
+
+  async function savePolicy(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    const lines = (k: string) => String(f.get(k) ?? "").split("\n");
+    const res = await fetch("/api/policy", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: f.get("text"),
+        limit: Number(f.get("limit")),
+        vendors: lines("vendors"),
+        pos: lines("pos"),
+      }),
+    });
+    setPolicy(await res.json());
+    setSaved(true);
+    setEditing(false);
+  }
 
   // Poll Reppo until the evaluation settles.
   useEffect(() => {
@@ -82,7 +105,31 @@ export default function Home() {
     <main>
       <h1>Openpath</h1>
       <p>See the exact path every agent decision takes.</p>
-      <div className="policy"><strong>Policy:</strong> {POLICY_TEXT}</div>
+      {policy && (
+        <div className="policy">
+          <strong>Policy:</strong> {policy.text}
+          <div className="detail">
+            Limit ${policy.limit} · {policy.vendors.length} approved vendors · {policy.pos.length} known POs
+            {saved && " · saved"}
+          </div>
+          <button type="button" style={{ marginTop: 8 }} onClick={() => setEditing(!editing)}>
+            {editing ? "Cancel" : "Edit rules"}
+          </button>
+          {editing && (
+            <form onSubmit={savePolicy} style={{ marginTop: 10 }}>
+              <label className="detail">Policy text (read by the judgment model)</label>
+              <textarea name="text" rows={4} defaultValue={policy.text} />
+              <label className="detail">Spending limit (USD, checked by code)</label>
+              <input name="limit" type="number" step="0.01" defaultValue={policy.limit} />
+              <label className="detail">Approved vendors, one per line (checked by code)</label>
+              <textarea name="vendors" rows={4} defaultValue={policy.vendors.join("\n")} />
+              <label className="detail">Known PO numbers, one per line (checked by code)</label>
+              <textarea name="pos" rows={4} defaultValue={policy.pos.join("\n")} />
+              <button>Save rules</button>
+            </form>
+          )}
+        </div>
+      )}
 
       <form onSubmit={submit}>
         <input name="amount" type="number" step="0.01" placeholder="Amount (USD)" defaultValue="250" required />

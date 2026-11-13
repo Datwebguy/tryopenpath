@@ -1,32 +1,8 @@
-import fs from "node:fs";
-import os from "node:os";
-import path from "node:path";
+import { readJson, writeJson } from "./storage";
 import type { Case, EvalResult, Run } from "./types";
 
-// File-backed demo history, so stored feedback survives restarts.
-// Set OPENPATH_DATA_DIR to change where it lives. On read-only or serverless
-// hosts the system temp dir is used, which lasts only as long as the instance.
-const dir =
-  process.env.OPENPATH_DATA_DIR ??
-  (process.env.VERCEL ? path.join(os.tmpdir(), "openpath") : path.join(process.cwd(), ".data"));
-const file = path.join(dir, "history.json");
-
-function load(): Run[] {
-  try {
-    return JSON.parse(fs.readFileSync(file, "utf8")) as Run[];
-  } catch {
-    return [];
-  }
-}
-
-function save(runs: Run[]) {
-  try {
-    fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(file, JSON.stringify(runs, null, 2));
-  } catch (e) {
-    console.error("Could not save history:", e);
-  }
-}
+const load = () => readJson<Run[]>("history.json", []);
+const save = (runs: Run[]) => writeJson("history.json", runs);
 
 export const caseKey = (c: Case) =>
   [c.vendor.trim().toLowerCase(), c.invoiceNumber.trim().toUpperCase(), c.amount].join("|");
