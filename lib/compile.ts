@@ -203,5 +203,9 @@ export async function compileRule(sentence: string): Promise<{ rule?: Rule; erro
     text,
   );
   if (second.rule || second.error) return second;
+
+  // SERV varies from one answer to the next, so one fresh attempt is worth making before giving up.
+  const third = await ask(messages, text);
+  if (third.rule || third.error) return third;
   return { error: `SERV's answer was not a complete rule. Try rewording it using ${FIELD_HELP}.` };
 }
