@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
   if (!reppoConfigured()) {
     addRun(run);
-    return NextResponse.json({ error: "Add a Reppo API key to score decisions." }, { status: 200 });
+    return NextResponse.json({ error: "Scoring switches on once a Reppo key is added." }, { status: 200 });
   }
 
   try {

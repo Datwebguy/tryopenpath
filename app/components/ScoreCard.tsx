@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { humanize } from "@/lib/format";
+import { humanize, routeLabel, verdictLabel } from "@/lib/format";
 import type { EvalResult } from "@/lib/types";
 
 type Props = {
@@ -44,7 +44,6 @@ export default function ScoreCard({ evalId, state, message, previous, elapsed }:
           <h2>Reppo score</h2>
           <p className="sub">Independent evaluators score every decision.</p>
         </div>
-        {evalId && <code className="evalid" title="Evaluation id">{evalId.slice(0, 10)}…</code>}
       </header>
 
       {message && !evalId && <p className="notice info">{message}</p>}
@@ -59,7 +58,7 @@ export default function ScoreCard({ evalId, state, message, previous, elapsed }:
         </div>
       )}
 
-      {state?.status === "FAILED" && <p className="notice info">{state.reason ?? "The evaluation ended early. Run the case again to score it."}</p>}
+      {state?.status === "FAILED" && <p className="notice info">{state.reason ?? "The scoring ended early. Run the case again to score it."}</p>}
 
       {settled && state && (
         <div className="score-body rise">
@@ -67,11 +66,11 @@ export default function ScoreCard({ evalId, state, message, previous, elapsed }:
             <Ring score={state.score!} />
             <div className="score-meta">
               <div className="chips">
-                {state.verdict && <span className={`pill ${state.verdict === "accept" ? "pass" : "fail"}`}>{humanize(state.verdict)}</span>}
-                {state.route && <span className="pill info">Route: {state.route}</span>}
+                {state.verdict && <span className={`pill ${state.verdict === "accept" ? "pass" : "fail"}`}>{verdictLabel(state.verdict)}</span>}
+                {state.route && <span className="pill info">{routeLabel(state.route)}</span>}
                 {delta !== undefined && (
                   <span className={`pill ${delta >= 0 ? "pass" : "warn"}`}>
-                    {delta >= 0 ? "▲" : "▼"} {Math.abs(delta)} vs previous run ({previous})
+                    {delta === 0 ? `Steady at ${previous}` : `${delta > 0 ? "▲ +" : "▼ "}${Math.abs(delta)} vs previous run (${previous})`}
                   </span>
                 )}
               </div>

@@ -51,7 +51,7 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
           <div>
             <h2 id="policy-title">{policy ? "Policy" : "Write your first policy"}</h2>
             <p className="sub">
-              {policy ? "The rules every case is checked against." : "Plain language for the model, exact values for the code checks."}
+              {policy ? "The rules every case is checked against." : "Write it in plain words, then set the exact limits."}
             </p>
           </div>
         </div>
@@ -79,17 +79,17 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
             <label className="label" htmlFor="ptext">Policy in plain language</label>
             <textarea id="ptext" rows={4} value={text} onChange={(e) => setText(e.target.value)} required
               placeholder="Describe when a case should be approved, denied, or sent to a person." />
-            <p className="hint">The judgment model reads this text and Reppo scores against it.</p>
+            <p className="hint">The AI reads this, and every decision is scored against it.</p>
           </div>
           <div className="field">
             <label className="label" htmlFor="plimit">Spending limit (USD)</label>
             <div className="input-prefix"><span>$</span>
               <input id="plimit" type="number" min="0" step="0.01" value={limit} onChange={(e) => setLimit(e.target.value)} required placeholder="0.00" />
             </div>
-            <p className="hint">Checked by code on every case. No model is involved.</p>
+            <p className="hint">Checked exactly on every case.</p>
           </div>
-          <TagInput label="Approved vendors" hint="Press Enter after each one. Checked by code." values={vendors} onChange={setVendors} placeholder="Add a vendor" />
-          <TagInput label="Known PO numbers" hint="Press Enter after each one. Checked by code." values={pos} onChange={setPos} placeholder="Add a PO number" />
+          <TagInput label="Approved vendors" hint="Press Enter after each one." values={vendors} onChange={setVendors} placeholder="Add a vendor" />
+          <TagInput label="Known PO numbers" hint="Press Enter after each one." values={pos} onChange={setPos} placeholder="Add a PO number" />
           {error && <p className="notice err" role="alert">{error}</p>}
           <div className="row">
             <button className="btn primary" disabled={saving}>{saving ? "Saving…" : policy ? "Save changes" : "Save policy"}</button>

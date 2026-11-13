@@ -3,7 +3,7 @@
 ## What it is
 A console that gives anyone a clear, permanent path through every decision an AI agent makes under a policy.
 
-You write the rules once and run a case. You see which steps ran as code, which step called a model and why, what limits were checked, and what the final decision was. Afterward the decision is scored, and the score and critique are kept so the next run of the same case can be sharper.
+You write the rules once and run a case. You see which steps were fixed rules, which step used AI judgment and why, what limits were checked, and what the final decision was. Afterward the decision is scored, and the score and critique are kept so the next run of the same case can be sharper.
 
 ## Who it is for
 - **Individuals** who want an agent to approve or spend within hard limits and leave a visible trail.
@@ -20,8 +20,8 @@ You write the rules once and run a case. You see which steps ran as code, which 
 
 ## What makes a decision inspectable
 - An explicit sequence of steps for every run.
-- Code steps for hard rules, math, field checks and limits.
-- A model step only where judgment is needed, labeled with the provider and the time it took.
+- Fixed-rule steps for limits, math and field checks, checked exactly every time.
+- An AI step only where judgment is needed, labeled with the model and the time it took.
 - Every run saved with its path and score.
 - Identity and session limits from Kite Passport when connected.
 - Reppo scoring that feeds the next run.

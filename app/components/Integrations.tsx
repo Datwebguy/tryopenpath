@@ -1,8 +1,8 @@
 export type Status = { serv: boolean; dolphin: boolean; reppo: boolean; kite: boolean };
 
 const ITEMS: { key: keyof Status; name: string; role: string }[] = [
-  { key: "serv", name: "SERV Reasoning", role: "judgment" },
-  { key: "dolphin", name: "Dolphin", role: "open models" },
+  { key: "serv", name: "SERV Reasoning", role: "AI judgment" },
+  { key: "dolphin", name: "Dolphin", role: "open AI models" },
   { key: "reppo", name: "Reppo", role: "scoring" },
   { key: "kite", name: "Kite Passport", role: "identity and limits" },
 ];

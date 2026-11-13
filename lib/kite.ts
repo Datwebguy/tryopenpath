@@ -94,7 +94,7 @@ export async function kiteChecks(c: Case): Promise<Step[]> {
     const s = await activeSession();
     const fail = (detail: string) => steps.push({ step: "kite_session_limit", type: "code", result: "failed", detail });
 
-    if (!s) fail("no active Passport session. Approve one with kpass agent:session create");
+    if (!s) fail("No active Passport session yet. Approve one in Kite Passport to continue.");
     else if (s.perTx === undefined && s.total === undefined) fail("the active session reports no spending limits");
     else if (s.perTx !== undefined && c.amount > s.perTx) fail(`amount ${money(c.amount)} is over the session per-transaction limit of ${money(s.perTx)}`);
     else if (s.total !== undefined && c.amount > s.total - s.spent - s.reserved) {

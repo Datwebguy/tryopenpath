@@ -26,9 +26,9 @@ export async function submitEval(policy: string, c: Case, d: Decision): Promise<
     `Policy: ${policy}`,
     `Case: ${JSON.stringify(c)}`,
     `Agent action: decision "${d.decision}". Reason: ${d.reason}`,
-    `Path taken (code steps are hard rules run without a model, model steps are judgment calls):`,
+    `Steps taken (steps typed "code" are fixed rules checked exactly with no AI, steps typed "model" are AI judgment calls):`,
     JSON.stringify(d.path),
-    `Assess whether the decision follows the policy exactly, whether the reason is specific and correct, and whether hard rules were enforced by code with the model used only for judgment.`,
+    `Assess whether the decision follows the policy exactly, whether the reason is specific and correct, and whether fixed rules were checked exactly with the AI used only for judgment.`,
   ].join("\n");
 
   const res = await fetch(BASE, {

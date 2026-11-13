@@ -53,7 +53,7 @@ export default function CaseForm({ policy, draft, onChange, onRun, loading }: Pr
           <textarea id="notes" rows={3} value={draft.notes} onChange={set("notes")} placeholder="Anything the reviewer should know about this invoice." />
         </div>
         <button className="btn primary lg" disabled={loading}>
-          {loading ? <><span className="spinner" /> Running the path…</> : <><PlayIcon width={16} height={16} /> Run case</>}
+          {loading ? <><span className="spinner" /> Checking the case…</> : <><PlayIcon width={16} height={16} /> Run case</>}
         </button>
       </form>
     </section>

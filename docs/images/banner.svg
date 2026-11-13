@@ -16,8 +16,8 @@
   <text x="270" y="152" font-family="Inter, -apple-system, Segoe UI, Roboto, sans-serif" font-size="82" font-weight="800" fill="#0f1729" letter-spacing="-2">Openpath</text>
   <text x="272" y="206" font-family="Inter, -apple-system, Segoe UI, Roboto, sans-serif" font-size="30" font-weight="500" fill="#5b6478">See the exact path every agent decision takes.</text>
   <g font-family="Inter, -apple-system, Segoe UI, Roboto, sans-serif" font-size="20" font-weight="600">
-    <rect x="272" y="236" width="150" height="40" rx="20" fill="#e0f2fe"/><text x="347" y="263" text-anchor="middle" fill="#0369a1">Code rules</text>
-    <rect x="436" y="236" width="170" height="40" rx="20" fill="#f3e8ff"/><text x="521" y="263" text-anchor="middle" fill="#6d28d9">Model judgment</text>
+    <rect x="272" y="236" width="150" height="40" rx="20" fill="#e0f2fe"/><text x="347" y="263" text-anchor="middle" fill="#0369a1">Fixed rules</text>
+    <rect x="436" y="236" width="170" height="40" rx="20" fill="#f3e8ff"/><text x="521" y="263" text-anchor="middle" fill="#6d28d9">AI judgment</text>
     <rect x="620" y="236" width="150" height="40" rx="20" fill="#dcfce7"/><text x="695" y="263" text-anchor="middle" fill="#15803d">Scored runs</text>
   </g>
 </svg>

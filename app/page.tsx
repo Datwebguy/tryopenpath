@@ -171,7 +171,7 @@ export default function Home() {
       <main className="wrap">
         <section className="hero">
           <h1>See the exact path every decision takes.</h1>
-          <p>Write a policy once. Hard rules run as code, judgment runs on a model, and every step is on the record, scored and ready to improve the next run.</p>
+          <p>Write your policy once. Fixed rules are checked exactly, judgment calls go to an AI, and every step is on the record, scored, and ready to improve the next run.</p>
           <Stepper done={done} />
         </section>
 
@@ -188,7 +188,7 @@ export default function Home() {
 
             {running && (
               <section className="card">
-                <header className="card-head tight"><div><h2>Running the path</h2><p className="sub">Hard checks first, then the judgment step.</p></div></header>
+                <header className="card-head tight"><div><h2>Checking the case</h2><p className="sub">Fixed rules first, then the AI judgment.</p></div></header>
                 <PathSkeleton />
               </section>
             )}
@@ -218,7 +218,7 @@ export default function Home() {
 
                 {current && (
                   <button className="btn secondary lg rerun" onClick={() => run(current)} disabled={running}>
-                    <RepeatIcon width={17} height={17} /> Run again with stored feedback
+                    <RepeatIcon width={17} height={17} /> Run again with feedback
                   </button>
                 )}
               </>
@@ -231,7 +231,7 @@ export default function Home() {
                   <circle cx="20" cy="90" r="9" fill="#4338ca" /><circle cx="80" cy="30" r="9" fill="#818cf8" /><circle cx="140" cy="60" r="9" fill="#a5b4fc" /><circle cx="200" cy="60" r="9" fill="#e0e7ff" stroke="#a5b4fc" strokeWidth="3" />
                 </svg>
                 <h2>{policy ? "Your decision path will appear here" : "Start with a policy"}</h2>
-                <p className="sub">{policy ? "Run a case and every step shows up live: the code checks, the model call, and the score." : "Save your rules on the left. Then every case you run is checked against them."}</p>
+                <p className="sub">{policy ? "Run a case and every step shows up live: the rule checks, the AI judgment, and the score." : "Save your rules on the left. Then every case you run is checked against them."}</p>
               </section>
             )}
 
@@ -240,7 +240,7 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="foot wrap">Openpath · Hard rules in code, judgment in a model, every step on record.</footer>
+      <footer className="foot wrap">Openpath · Fixed rules, AI judgment, every step on record.</footer>
     </>
   );
 }

@@ -5,6 +5,7 @@ import { latestScored } from "@/lib/history";
 import { judge } from "@/lib/judge";
 import { kiteChecks } from "@/lib/kite";
 import { getPolicy } from "@/lib/policy";
+import { routeLabel, stepLabel, verdictLabel } from "@/lib/format";
 import type { Case, Decision } from "@/lib/types";
 
 export async function POST(req: Request) {
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
     step: "load_feedback",
     type: "code",
     result: prior ? `previous score ${prior.score}/100` : "first run",
-    detail: prior ? `verdict: ${prior.verdict}, route: ${prior.route}` : undefined,
+    detail: prior ? `${verdictLabel(prior.verdict ?? "")} · ${routeLabel(prior.route ?? "")}` : undefined,
   });
   const failed = path.filter((s) => s.result === "failed");
 
@@ -44,11 +45,11 @@ export async function POST(req: Request) {
       step: "model_judgment",
       type: "model",
       result: "skipped",
-      detail: "A hard rule already decided this case, so no model judgment is needed.",
+      detail: "A rule already decided this case, so the AI judgment was not needed.",
     });
     const out: Decision = {
       decision: "deny",
-      reason: `Denied by rule: ${failed.map((s) => s.step.replace(/_/g, " ")).join(", ")}`,
+      reason: `Denied by rule: ${failed.map((s) => stepLabel(s.step).toLowerCase()).join(", ")}`,
       path,
       ms: Date.now() - started,
     };
@@ -70,16 +71,17 @@ export async function POST(req: Request) {
     const out: Decision = { decision: j.decision, reason: j.reason, path, ms: Date.now() - started };
     return NextResponse.json(out);
   } catch (e) {
+    console.error("Judgment step failed:", e);
     path.push({
       step: "model_judgment",
       type: "model",
       result: "escalate",
-      detail: String(e).replace(/^Error: /, "").slice(0, 300),
+      detail: "The AI provider did not return an answer.",
       ms: Date.now() - t,
     });
     const out: Decision = {
       decision: "escalate",
-      reason: "The judgment step could not answer, so this case goes to a person.",
+      reason: "The AI judgment did not come through, so this case goes to a person.",
       path,
       ms: Date.now() - started,
     };

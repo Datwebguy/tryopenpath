@@ -180,7 +180,6 @@ textarea { resize: vertical; }
 .shimmer.w1 { width: 46%; } .shimmer.w2 { width: 72%; }
 
 /* Score */
-.evalid { font-size: 0.75rem; color: var(--faint); background: #f3f4f9; padding: 3px 8px; border-radius: 8px; }
 .pending { display: flex; gap: 14px; align-items: center; padding: 14px; background: var(--brand-soft); border-radius: 13px; }
 .pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--brand); flex: none; animation: pulse 1.4s infinite; }
 .score-top { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }

@@ -1,4 +1,4 @@
-import { cap, duration, humanize } from "@/lib/format";
+import { duration, providerLabel, resultLabel, stepLabel } from "@/lib/format";
 import type { Step } from "@/lib/types";
 import { AlertIcon, CheckIcon, CodeIcon, SkipIcon, SparkIcon, XIcon } from "./Icons";
 
@@ -23,7 +23,7 @@ const ToneIcon = ({ t }: { t: Tone }) =>
 
 export function PathSkeleton() {
   return (
-    <div className="graph" aria-busy="true" aria-label="Running the path">
+    <div className="graph" aria-busy="true" aria-label="Checking the case">
       {[0, 1, 2, 3].map((i) => (
         <div key={i}>
           <div className="node skeleton" style={{ animationDelay: `${i * 120}ms` }}>
@@ -44,8 +44,8 @@ export default function PathGraph({ path, ms }: { path: Step[]; ms?: number }) {
   return (
     <div>
       <div className="path-stats">
-        <span className="stat code"><CodeIcon width={14} height={14} /> {code} code step{code === 1 ? "" : "s"}</span>
-        <span className="stat model"><SparkIcon width={14} height={14} /> {model} model call{model === 1 ? "" : "s"}</span>
+        <span className="stat code"><CodeIcon width={14} height={14} /> {code} rule check{code === 1 ? "" : "s"}</span>
+        <span className="stat model"><SparkIcon width={14} height={14} /> {model} AI judgment{model === 1 ? "" : "s"}</span>
         {skipped > 0 && <span className="stat skip"><SkipIcon width={14} height={14} /> {skipped} skipped</span>}
         {ms !== undefined && <span className="stat time">{duration(ms)} total</span>}
       </div>
@@ -59,16 +59,16 @@ export default function PathGraph({ path, ms }: { path: Step[]; ms?: number }) {
                 <span className={`node-icon ${s.type}`}>{s.type === "code" ? <CodeIcon width={16} height={16} /> : <SparkIcon width={16} height={16} />}</span>
                 <div className="node-body">
                   <div className="node-head">
-                    <span className="node-name">{humanize(s.step)}</span>
-                    <span className={`pill ${t}`}><ToneIcon t={t} /> {cap(s.result)}</span>
+                    <span className="node-name">{stepLabel(s.step)}</span>
+                    <span className={`pill ${t}`}><ToneIcon t={t} /> {resultLabel(s.result)}</span>
                   </div>
                   <div className="node-meta">
-                    <span className={`kind ${s.type}`}>{s.type === "code" ? "Code" : "Model"}</span>
-                    {s.provider && <span className="provider">{s.provider}</span>}
+                    <span className={`kind ${s.type}`}>{s.type === "code" ? "Rule" : "AI"}</span>
+                    {s.provider && <span className="provider">{providerLabel(s.provider)}</span>}
                     {s.ms !== undefined && <span className="provider">{duration(s.ms)}</span>}
                   </div>
                   {s.detail && <p className="node-detail">{s.detail}</p>}
-                  {s.fallbacks?.map((f, k) => <p className="node-note" key={k}>Passed on by {f}</p>)}
+                  {s.fallbacks?.map((f, k) => <p className="node-note" key={k}>Tried first: {f}</p>)}
                 </div>
               </div>
               {i < path.length - 1 && <div className="link" style={{ animationDelay: `${i * 90 + 60}ms` }} />}
