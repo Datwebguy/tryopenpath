@@ -25,8 +25,9 @@ export type EvalResult = {
   evalId: string;
   status: EvalStatus;
   score?: number; // overall 0-100
-  verdict?: string; // accept | revise | reject
-  critiques?: { criterion: string; score: number; critique: string }[];
+  verdict?: string; // accept | reject
+  route?: string; // ship | review | block
+  critiques?: { criterion: string; score: number }[]; // per-dimension scores, 0-100
   reason?: string;
 };
 

@@ -1,6 +1,7 @@
 import type { Case, Decision, EvalResult } from "./types";
 
-const BASE = "https://eval.reppo.xyz/api/v1/agents/eval-requests";
+// Reppo Evaluation API. Endpoints follow https://eval.reppo.xyz/agents.md
+const BASE = "https://eval.reppo.xyz/api/v1/agents/evals";
 
 function headers() {
   return {
@@ -11,44 +12,56 @@ function headers() {
 
 export const reppoConfigured = () => !!process.env.REPPO_API_KEY;
 
-const CRITERIA = [
-  "Does the decision follow the stated policy exactly?",
-  "Is the reason specific and correct for this case?",
-  "Are hard rules checked by code steps, with a model used only for judgment?",
-];
+// Keep error text short and readable (an HTML error page should not reach the UI).
+async function fail(what: string, res: Response): Promise<never> {
+  const body = await res.text();
+  const text = body.trimStart().startsWith("<") ? "(non-JSON response)" : body.slice(0, 300);
+  throw new Error(`Reppo ${what} ${res.status}: ${text}`);
+}
 
-// Submit the decision trace for scoring. Reppo settles asynchronously.
+// Submit the finished decision as an "action" for scoring. Reppo scores it in the background.
 export async function submitEval(policy: string, c: Case, d: Decision): Promise<string> {
-  const res = await fetch(`${BASE}/submit`, {
+  const input = [
+    `The user asked the agent to review this case under the policy below and decide whether to approve the payment.`,
+    `Policy: ${policy}`,
+    `Case: ${JSON.stringify(c)}`,
+    `Agent action: decision "${d.decision}". Reason: ${d.reason}`,
+    `Path taken (code steps are hard rules run without a model, model steps are judgment calls):`,
+    JSON.stringify(d.path),
+    `Assess whether the decision follows the policy exactly, whether the reason is specific and correct, and whether hard rules were enforced by code with the model used only for judgment.`,
+  ].join("\n");
+
+  const res = await fetch(BASE, {
     method: "POST",
     headers: headers(),
-    body: JSON.stringify({
-      type: "trace",
-      payload: JSON.stringify({ case: c, decision: d.decision, reason: d.reason, path: d.path }),
-      criteria: CRITERIA,
-      context: `Policy: ${policy}`,
-      settlementMinutes: 10,
-    }),
+    body: JSON.stringify({ taskType: "action", input }),
   });
-  if (!res.ok) throw new Error(`Reppo submit ${res.status}: ${await res.text()}`);
+  if (!res.ok) await fail("submit", res);
   const data = await res.json();
-  return data.evalId as string;
+  return data.id as string;
 }
 
 export async function readEval(evalId: string): Promise<EvalResult> {
   const res = await fetch(`${BASE}/${encodeURIComponent(evalId)}`, { headers: headers() });
-  if (!res.ok) throw new Error(`Reppo read ${res.status}: ${await res.text()}`);
+  if (!res.ok) await fail("read", res);
   const data = await res.json();
-  const r = data.result;
-  if (data.status === "SETTLED") {
+
+  if (data.status === "COMPLETED") {
+    const r = data.result ?? {};
     return {
       evalId,
       status: "SETTLED",
-      score: r?.verdict?.score,
-      verdict: r?.verdict?.decision,
-      critiques: r?.verdicts,
+      score: r.score ?? data.score,
+      verdict: r.decision,
+      route: r.route ?? data.route,
+      reason: r.reason,
+      critiques: Object.entries((r.rubric_scores ?? {}) as Record<string, number>).map(
+        ([criterion, score]) => ({ criterion, score }),
+      ),
     };
   }
-  if (data.status === "FAILED") return { evalId, status: "FAILED", reason: r?.reason };
-  return { evalId, status: "PENDING" };
+  if (data.status === "FAILED") {
+    return { evalId, status: "FAILED", reason: data.error ? String(data.error) : "evaluation failed" };
+  }
+  return { evalId, status: "PENDING" }; // QUEUED or PROCESSING
 }

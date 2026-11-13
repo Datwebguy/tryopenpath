@@ -62,7 +62,7 @@ export default function Home() {
       if (stop) return;
       if (r.error) return setEvalError(r.error);
       setEvalState(r);
-      if (r.status === "PENDING") setTimeout(poll, 10000);
+      if (r.status === "PENDING") setTimeout(poll, 5000);
       else loadHistory();
     }
     poll();
@@ -173,16 +173,18 @@ export default function Home() {
           <h3>Reppo score</h3>
           {evalError && <p className="detail">Not scored: {evalError}</p>}
           {evalId && <p className="detail">evalId: {evalId}</p>}
-          {evalState?.status === "PENDING" && <p>Scoring... (can take up to 10 minutes)</p>}
+          {evalState?.status === "PENDING" && <p>Scoring... (usually 30-90 seconds)</p>}
           {evalState?.status === "FAILED" && <p>Evaluation failed: {evalState.reason}</p>}
           {evalState?.status === "SETTLED" && (
             <>
               <p>
-                <strong>{evalState.score}/100</strong> ({evalState.verdict})
+                <strong>{evalState.score}/100</strong> ({evalState.verdict}
+                {evalState.route && `, route: ${evalState.route}`})
               </p>
+              {evalState.reason && <p className="detail">{evalState.reason}</p>}
               {evalState.critiques?.map((k, i) => (
                 <div className="detail" key={i}>
-                  {k.score}/10 {k.criterion}: {k.critique}
+                  {k.criterion}: {k.score}/100
                 </div>
               ))}
             </>

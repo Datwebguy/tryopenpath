@@ -18,8 +18,8 @@ export async function POST(req: Request) {
   // Feedback loop: look up the Reppo score from the last run of this same case.
   const prior = latestScored(caseKey(c))?.eval;
   const feedback = prior
-    ? `Score ${prior.score}/100 (${prior.verdict}). ` +
-      (prior.critiques ?? []).map((k) => `${k.criterion}: ${k.critique}`).join(" ")
+    ? `Score ${prior.score}/100 (${prior.verdict}, route: ${prior.route}). ${prior.reason ?? ""} ` +
+      (prior.critiques ?? []).map((k) => `${k.criterion}: ${k.score}/100`).join(", ")
     : undefined;
 
   const policy = getPolicy();
