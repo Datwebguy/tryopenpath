@@ -19,6 +19,12 @@ export function setEval(evalId: string, result: EvalResult) {
   save(runs);
 }
 
+export function clearRuns() {
+  const n = load().length;
+  save([]);
+  return n;
+}
+
 export const allRuns = () => load().reverse();
 
 // Most recent run of this case whose Reppo score has settled.

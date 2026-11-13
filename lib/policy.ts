@@ -10,6 +10,10 @@ export type Policy = {
 // No built-in policy. It exists only once the user has saved one.
 export const getPolicy = (): Policy | null => readJson<Policy | null>("policy.json", null);
 
+export function clearPolicy() {
+  writeJson("policy.json", null);
+}
+
 const list = (v: unknown): string[] =>
   Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean) : [];
 

@@ -111,6 +111,10 @@ textarea { resize: vertical; }
 .btn.secondary { background: #fff; color: var(--brand); border-color: #c7cdfb; }
 .btn.secondary:hover:not(:disabled) { background: var(--brand-soft); transform: translateY(-1px); }
 .btn.ghost { background: transparent; color: var(--muted); border-color: var(--line-strong); }
+.btn.danger { background: #fff; color: var(--fail); border-color: #fca5a5; }
+.btn.danger:hover { background: var(--fail-bg); }
+.push { margin-left: auto; }
+.confirm { gap: 6px; }
 .btn.ghost:hover { color: var(--ink); background: #f3f4f9; }
 .spinner { width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
 

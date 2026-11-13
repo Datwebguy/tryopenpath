@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
-import { getPolicy, savePolicy } from "@/lib/policy";
+import { clearPolicy, getPolicy, savePolicy } from "@/lib/policy";
 
 export async function GET() {
   return NextResponse.json(getPolicy());
+}
+
+// Removes the saved policy so the console starts fresh.
+export async function DELETE() {
+  clearPolicy();
+  return NextResponse.json({ cleared: true });
 }
 
 export async function PUT(req: Request) {

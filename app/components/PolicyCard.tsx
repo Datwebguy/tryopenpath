@@ -9,9 +9,11 @@ import TagInput from "./TagInput";
 type Props = {
   policy: Policy | null;
   onSave: (p: Policy) => Promise<string | null>;
+  onReset: () => void;
 };
 
-export default function PolicyCard({ policy, onSave }: Props) {
+export default function PolicyCard({ policy, onSave, onReset }: Props) {
+  const [confirmReset, setConfirmReset] = useState(false);
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(policy?.text ?? "");
   const [limit, setLimit] = useState(policy ? String(policy.limit) : "");
@@ -92,6 +94,9 @@ export default function PolicyCard({ policy, onSave }: Props) {
           <div className="row">
             <button className="btn primary" disabled={saving}>{saving ? "Saving…" : policy ? "Save changes" : "Save policy"}</button>
             {policy && <button type="button" className="btn ghost" onClick={() => setEditing(false)}>Cancel</button>}
+            {policy && (confirmReset
+              ? <button type="button" className="btn danger" onClick={onReset}>Remove this policy</button>
+              : <button type="button" className="btn ghost push" onClick={() => setConfirmReset(true)}>Start over</button>)}
           </div>
         </form>
       )}

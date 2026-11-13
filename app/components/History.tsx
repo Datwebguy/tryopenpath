@@ -1,9 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import { ago, money } from "@/lib/format";
 import type { Run } from "@/lib/types";
 
-type Props = { runs: Run[]; activeAt?: string; onSelect: (r: Run) => void };
+type Props = { runs: Run[]; activeAt?: string; onSelect: (r: Run) => void; onClear: () => void };
 
-export default function History({ runs, activeAt, onSelect }: Props) {
+export default function History({ runs, activeAt, onSelect, onClear }: Props) {
+  const [confirm, setConfirm] = useState(false);
   if (runs.length === 0) return null;
   return (
     <section className="card" aria-labelledby="hist-title">
@@ -12,6 +16,14 @@ export default function History({ runs, activeAt, onSelect }: Props) {
           <h2 id="hist-title">History</h2>
           <p className="sub">Every run is saved with its path and score. Open one to review it.</p>
         </div>
+        {confirm ? (
+          <div className="row confirm">
+            <button className="btn danger sm" onClick={() => { setConfirm(false); onClear(); }}>Clear all {runs.length}</button>
+            <button className="btn ghost sm" onClick={() => setConfirm(false)}>Keep</button>
+          </div>
+        ) : (
+          <button className="btn ghost sm" onClick={() => setConfirm(true)}>Clear history</button>
+        )}
       </header>
       <ul className="history">
         {runs.map((r) => (

@@ -116,6 +116,27 @@ export default function Home() {
     setActiveAt(h[0]?.at);
   }
 
+  async function clearHistory() {
+    await fetch("/api/history", { method: "DELETE" });
+    setHistory([]);
+    setActiveAt(undefined);
+    setResult(null);
+    setCurrent(null);
+    setEvalId(null);
+    setEvalState(null);
+    setEvalMsg(null);
+  }
+
+  async function resetPolicy() {
+    await fetch("/api/policy", { method: "DELETE" });
+    setPolicy(null);
+    setResult(null);
+    setCurrent(null);
+    setEvalId(null);
+    setEvalState(null);
+    setDraft(emptyDraft);
+  }
+
   function openRun(r: Run) {
     setCurrent(r.case);
     setDraft({ amount: String(r.case.amount), vendor: r.case.vendor, invoiceNumber: r.case.invoiceNumber, notes: r.case.notes });
@@ -156,7 +177,7 @@ export default function Home() {
 
         <div className="layout">
           <div className="col">
-            {loaded && <PolicyCard key={policy ? "set" : "new"} policy={policy} onSave={savePolicy} />}
+            {loaded && <PolicyCard key={policy ? "set" : "new"} policy={policy} onSave={savePolicy} onReset={resetPolicy} />}
             {policy && (
               <CaseForm policy={policy} draft={draft} onChange={setDraft} loading={running} onRun={() => run(toCase(draft))} />
             )}
@@ -214,7 +235,7 @@ export default function Home() {
               </section>
             )}
 
-            <History runs={history} activeAt={activeAt} onSelect={openRun} />
+            <History runs={history} activeAt={activeAt} onSelect={openRun} onClear={clearHistory} />
           </div>
         </div>
       </main>
