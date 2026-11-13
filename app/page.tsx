@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Policy } from "@/lib/policy";
+import PathGraph from "./PathGraph";
 import type { Case, Decision, EvalResult, Run } from "@/lib/types";
 
 export default function Home() {
@@ -167,16 +168,7 @@ export default function Home() {
         <section>
           <div className={`decision ${result.decision}`}>{result.decision}</div>
           <p>{result.reason}</p>
-          {result.path.map((s, i) => (
-            <div className="step" key={i}>
-              <span className={`tag ${s.type}`}>{s.type}</span>
-              <span>
-                {s.step}: <strong>{s.result}</strong>
-                {s.provider && <div className="detail">via {s.provider}</div>}
-                {s.detail && <div className="detail">{s.detail}</div>}
-              </span>
-            </div>
-          ))}
+          <PathGraph path={result.path} />
 
           <h3>Reppo score</h3>
           {evalError && <p className="detail">Not scored: {evalError}</p>}

@@ -34,7 +34,12 @@ export async function POST(req: Request) {
 
   // Hard rule failed: deny without calling a model.
   if (failed.length > 0) {
-    path.push({ step: "model_judgment", type: "model", result: "skipped" });
+    path.push({
+      step: "model_judgment",
+      type: "model",
+      result: "skipped",
+      detail: "Not called: a hard rule already failed, so no model judgment is needed",
+    });
     const out: Decision = {
       decision: "deny",
       reason: `Failed: ${failed.map((s) => s.step).join(", ")}`,

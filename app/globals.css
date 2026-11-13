@@ -13,3 +13,14 @@ button:disabled { opacity: 0.6; }
 .tag.code { background: #1e3a5f; } .tag.model { background: #4a2d6b; }
 .detail { color: #9aa0a6; font-size: 0.85rem; }
 .decision-sm { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; min-width: 64px; }
+.graph { margin: 12px 0; }
+.node { border: 1px solid #2c313c; border-left-width: 4px; border-radius: 8px; padding: 10px 12px; background: #151821; }
+.node-head { display: flex; gap: 8px; align-items: center; }
+.node-name { flex: 1; }
+.node-result { font-weight: 700; text-transform: uppercase; font-size: 0.8rem; }
+.node.pass { border-left-color: #4ade80; } .node.pass .node-result { color: #4ade80; }
+.node.fail { border-left-color: #f87171; } .node.fail .node-result { color: #f87171; }
+.node.warn { border-left-color: #fbbf24; } .node.warn .node-result { color: #fbbf24; }
+.node.info { border-left-color: #4f8cff; }
+.node.skip { border-style: dashed; opacity: 0.55; border-left-color: #6b7280; }
+.link { width: 2px; height: 14px; background: #2c313c; margin-left: 24px; }
