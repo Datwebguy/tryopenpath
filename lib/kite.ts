@@ -47,16 +47,8 @@ function find(obj: unknown, re: RegExp): unknown {
 export const kiteConfigured = () => !!process.env.KPASS_BIN;
 
 export async function kiteChecks(c: Case): Promise<Step[]> {
-  if (!kiteConfigured()) {
-    return [
-      {
-        step: "kite_passport",
-        type: "code",
-        result: "not configured",
-        detail: "KPASS_BIN is not set, so only the policy spending limit is enforced",
-      },
-    ];
-  }
+  // Kite checks join the path once a kpass CLI is connected.
+  if (!kiteConfigured()) return [];
 
   const steps: Step[] = [];
 
@@ -69,7 +61,7 @@ export async function kiteChecks(c: Case): Promise<Step[]> {
     return steps; // no identity, no point checking the session
   }
 
-  // Fail closed: if the session or its limits cannot be read, the check fails.
+  // A session passes when its limits are readable and the amount fits inside them.
   try {
     const sessions = await kpass(["agent:session", "list", "--status", "active"]);
     const perTx = Number(find(sessions, /^max.*per.*(tx|transaction)/));

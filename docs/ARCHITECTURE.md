@@ -1,78 +1,65 @@
-# Openpath — Architecture
+# Openpath: Architecture
 
 ## Overview
-Simple Next.js app with a single core flow: policy + case → SERV Reasoning → visible path → evaluation → stored feedback.
+A Next.js (App Router, TypeScript) application with one flow: policy and case, hard rules, model judgment, a visible path, a Reppo score, and stored feedback.
 
-## Components
+![Architecture](images/architecture.svg)
 
-### Frontend
-- Policy display (hardcoded demo policy for the hackathon)
-- Case input form (amount, vendor, invoice number, notes)
-- Results panel:
-  - Decision (approve / deny / escalate)
-  - Path list (each step labeled `code` or `model`)
-  - Reason
-  - Reppo score + evalId
-- Re-run button
+## Frontend
+- **Policy card:** plain-language text, a spending limit, and tag inputs for vendors and PO numbers.
+- **Case form:** amount, invoice or PO number, vendor and notes, with suggestions from the saved lists.
+- **Decision and path:** the decision, the reason, and each step labeled `code` or `model` with its result and timing.
+- **Score card:** the overall Reppo score, route, reason, and per-dimension bars, with the change from the previous run.
+- **History:** every saved run, openable for review.
+- **Integrations bar:** which services are active.
 
-### Backend (API routes or server actions)
-1. **POST /api/decide**
-   - Receives policy + case
-   - Builds system prompt that forces structured JSON with path
-   - Calls SERV Reasoning (`https://inference-api.openserv.ai/v1/chat/completions`)
-   - Optionally routes judgment steps through Dolphin
-   - Applies Kite-style limit check (real or stub)
-   - Returns decision + path
+## Server routes
+| Route | Purpose |
+|---|---|
+| `POST /api/decide` | Runs the hard checks, loads stored feedback, calls the judgment step when needed, and returns the decision and path. |
+| `POST /api/evaluate` | Submits a finished decision to Reppo as an `action` and stores the run. |
+| `GET /api/evaluate/:evalId` | Reads the Reppo evaluation and stores the settled score on the run. |
+| `GET` / `PUT /api/policy` | Reads and saves the policy. |
+| `GET /api/history` | Lists saved runs. |
+| `GET /api/status` | Reports which integrations are active, as yes or no values only. |
 
-2. **POST /api/evaluate**
-   - Takes the decision + path
-   - Submits to Reppo Evaluation API
-   - Returns evalId and (after polling) score
+## Steps in a path
+1. `parse_case`: required fields and numbers.
+2. `policy_spending_limit`: amount against your limit.
+3. `po_match` and `vendor_allowlist`: against your saved lists.
+4. `kite_identity` and `kite_session_limit`: added when `KPASS_BIN` is set.
+5. `load_feedback`: the stored Reppo score for the same case.
+6. `model_judgment`: skipped when a rule already decided the case.
 
-3. **Storage**
-   - Simple in-memory or local JSON / SQLite for demo history
-   - Stores previous runs of the same case so feedback can influence the next prompt or be displayed as history
-
-## Data flow
-```
-User input (policy + case)
-        ↓
-Build system prompt (force JSON path with code/model labels)
-        ↓
-SERV Reasoning call
-        ↓
-Parse decision + path
-        ↓
-Apply Kite limit check (insert as code step)
-        ↓
-Show path + decision
-        ↓
-Submit to Reppo → store score
-        ↓
-On re-run: include previous score/feedback in context
-```
-
-## Path structure (example)
 ```json
 {
   "decision": "deny",
-  "reason": "Amount exceeds limit",
+  "reason": "Denied by rule: policy spending limit",
+  "ms": 12,
   "path": [
     { "step": "parse_case", "type": "code", "result": "ok" },
-    { "step": "check_amount_limit", "type": "code", "result": "failed" },
-    { "step": "vendor_check", "type": "model", "result": "skipped" }
+    { "step": "policy_spending_limit", "type": "code", "result": "failed" },
+    { "step": "model_judgment", "type": "model", "result": "skipped" }
   ]
 }
 ```
 
-## Partner integration points
-- **SERV**: Every decision
-- **Dolphin**: Model nodes (optional fallback to SERV catalog)
-- **Kite**: Spending limit + identity gate (stub acceptable)
-- **Reppo**: Post-decision scoring and feedback loop
+## Judgment providers
+`lib/judge.ts` tries Dolphin first when `DOLPHIN_API_KEY` and `DOLPHIN_MODEL` are set, then SERV Reasoning. `JUDGE_PROVIDER=serv` reverses the order. When a provider passes the step on, the path records which one and why.
 
-## Constraints for the hackathon
-- One policy is enough
-- Stub Kite if live CLI setup delays the demo
-- Prefer readable code over perfect architecture
-- Keep the UI simple and the path obvious
+## Reppo
+`lib/reppo.ts` follows the Evaluation API guide at https://eval.reppo.xyz/agents.md. A decision is submitted with `taskType: "action"`, and the status moves from `QUEUED` and `PROCESSING` to `COMPLETED`. The score, route, reason and rubric scores are stored with the run.
+
+## Kite Passport
+`lib/kite.ts` runs the `kpass` CLI with `--output json --no-interactive`. `kpass me` confirms identity, and `kpass agent:session list --status active` supplies the session limits. A session passes when its limits are readable and the amount fits inside them.
+
+## Storage
+`lib/storage.ts` writes `policy.json` and `history.json` to `OPENPATH_DATA_DIR`, which defaults to `.data` in the project. On Railway, mount a volume and point the variable at it.
+
+## Feedback loop
+```
+Run a case → path + decision → Reppo score → saved with the run
+        ↑                                          │
+        └──── next run of the same case reads it ──┘
+```
+Cases are matched by vendor, PO number and amount.

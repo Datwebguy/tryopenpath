@@ -1,24 +1,24 @@
-# Openpath — Build Plan (remaining time)
+# Openpath: Build Plan
 
-## Priority order
-1. Scaffold Next.js + TypeScript app
-2. Hardcode one policy (invoice approval)
-3. Case form + results panel
-4. SERV Reasoning call that returns structured decision + path
-5. Display the path with clear code vs model labels
-6. Stub Kite limit check and show it as a code step
-7. Reppo evaluation submit + score display
-8. Simple history so re-run shows previous score
-9. README + .env.example
-10. Deploy + record short demo + X post + submit
+## Delivered
+- [x] Next.js and TypeScript app
+- [x] Policy editor with plain text, spending limit, vendor and PO tags
+- [x] Case form with suggestions from the saved lists
+- [x] Hard rules as code: fields, spending limit, PO match, vendor list
+- [x] Judgment step through SERV Reasoning, with Dolphin as the first choice when set up
+- [x] Path graph with code and model steps, timings and skipped steps
+- [x] Reppo scoring with a live status and a per-dimension breakdown
+- [x] Stored history and feedback that carries into the next run
+- [x] Score change shown between runs
+- [x] Kite Passport identity and session-limit checks through `kpass`
+- [x] Light, responsive interface with motion
+- [x] README, `.env.example`, license and documentation
 
-## If time runs out
-Ship steps 1–6. Note the Reppo and Kite stubs in the write-up and still submit.
-
-## Environment
-- SERV_API_KEY (required)
-- REPPO_API_KEY (for evaluation)
-- DOLPHIN_API_KEY (optional)
+## Next
+1. Deploy on Railway with a volume for `/data`.
+2. Record a short walkthrough: policy, case, path, score, re-run.
+3. Write the X post tagging @openservai.
+4. Complete the submission form: https://openserv.typeform.com/submissions02
 
 ## Done when
-A stranger can open the demo, submit a case, see a clear path, understand the decision, and see a score or feedback.
+Anyone can open the demo, write a policy, submit a case, read a clear path, understand the decision, and see a score and its effect on the next run.

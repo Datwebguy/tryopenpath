@@ -10,13 +10,16 @@ export type Step = {
   type: "code" | "model";
   result: string;
   detail?: string;
-  provider?: string;
+  provider?: string; // which model answered a model step
+  fallbacks?: string[]; // providers tried first, with the reason each passed the step on
+  ms?: number; // how long the step took
 };
 
 export type Decision = {
   decision: "approve" | "deny" | "escalate";
   reason: string;
   path: Step[];
+  ms?: number; // total time for the whole path
 };
 
 export type EvalStatus = "PENDING" | "SETTLED" | "FAILED";

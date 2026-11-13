@@ -1,11 +1,8 @@
 import { readJson, writeJson } from "./storage";
-import type { Case, EvalResult, Run } from "./types";
+import type { EvalResult, Run } from "./types";
 
 const load = () => readJson<Run[]>("history.json", []);
 const save = (runs: Run[]) => writeJson("history.json", runs);
-
-export const caseKey = (c: Case) =>
-  [c.vendor.trim().toLowerCase(), c.invoiceNumber.trim().toUpperCase(), c.amount].join("|");
 
 export function addRun(run: Run) {
   const runs = load();

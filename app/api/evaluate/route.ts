@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { addRun, caseKey } from "@/lib/history";
+import { caseKey } from "@/lib/case";
+import { addRun } from "@/lib/history";
 import { getPolicy } from "@/lib/policy";
 import { reppoConfigured, submitEval } from "@/lib/reppo";
 import type { Case, Decision, Run } from "@/lib/types";
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
 
   if (!reppoConfigured()) {
     addRun(run);
-    return NextResponse.json({ error: "REPPO_API_KEY is not set" }, { status: 200 });
+    return NextResponse.json({ error: "Add a Reppo API key to score decisions." }, { status: 200 });
   }
 
   try {

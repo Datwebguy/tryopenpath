@@ -1,27 +1,33 @@
-# Openpath — Submission Draft
+# Openpath: Submission
 
 ## Project name
 Openpath
 
 ## Tracks
-Kite, Reppo, Open (Dolphin used for open-model judgment steps)
+Kite, Reppo, Open, with Dolphin as the open-model backend for judgment steps.
 
 ## What it does
-Openpath is a console that lets anyone define a policy for an AI agent and see the exact path every decision takes. Hard rules and spending limits run as code. Judgment steps call a model only when needed. The full path is visible, the outcome is scored, and the score improves the next run.
+Openpath is a console where anyone writes a policy for an AI agent and sees the exact path every decision takes. Hard rules and spending limits run as code. The judgment step calls a model only where judgment is needed. The full path is visible, the outcome is scored by independent evaluators, and the score and critique shape the next run of the same case.
 
 ## How SERV Reasoning is used
-Every case is sent to the SERV Reasoning API with a system prompt that forces a structured decision plus an explicit step-by-step path. The path distinguishes code steps (limits, field checks) from model steps. This gives the inspectable, bounded reasoning OpenServ describes with Graph Sharding.
+SERV Reasoning powers the judgment step. After the code checks clear a case, the policy, the case and any stored feedback go to SERV through `/v1/chat/completions` with a system prompt that asks for a structured JSON decision. The path labels every step as `code` or `model`, shows which model answered and how long it took, and records when a hard rule already decided the case so the model step is skipped. That gives the inspectable, bounded reasoning OpenServ describes with Graph Sharding: each step is separate, controlled and on the record.
 
 ## Partner usage
-- **Kite**: Identity and hard spending limits gate payment-related decisions.
-- **Reppo**: Every decision is submitted to the Evaluation API. The score and feedback are stored and used on the next run of the same case.
-- **Dolphin**: Open-model inference for judgment nodes (or SERV catalog fallback).
+- **Kite:** the `kpass` CLI adds identity and session spending-limit checks to the path.
+- **Reppo:** every decision is submitted to the Evaluation API. The score, route, reason and rubric scores are stored and used on the next run of the same case, and the console shows the score change.
+- **Dolphin:** open-model inference for the judgment step, tried first when set up, with SERV Reasoning as the answering model otherwise.
+
+## Real data throughout
+Policy text, spending limit, vendors and PO numbers come from the user. Scores come from Reppo. Decisions come from live model calls. History is stored on disk.
 
 ## Demo
-[Link to deployed demo or video]
+Add the deployed link or video URL here.
 
-## Repo
-[GitHub link]
+## Repository
+https://github.com/Datwebguy/tryopenpath
 
 ## X post
-[Link to post tagging @openservai]
+Add the link to the post tagging @openservai here.
+
+## Submission form
+https://openserv.typeform.com/submissions02

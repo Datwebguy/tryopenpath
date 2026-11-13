@@ -1,54 +1,38 @@
-# Openpath — Project Overview
+# Openpath: Project Overview
 
-**Hackathon:** SERV Hackathon — Edition 02  
-**Organizer:** OpenServ (@openservai)  
-**Deadline:** November 15, 2026, 23:59 UTC  
-**Prize pool:** $5,000  
-**Tracks:** Can target multiple (Kite + Reppo + Open recommended; Dolphin as inference backend)
+**Hackathon:** SERV Hackathon, Edition 02
+**Organizer:** OpenServ ([@openservai](https://x.com/openservai))
+**Deadline:** November 15, 2026, 23:59 UTC
+**Prize pool:** $5,000
+**Tracks:** Kite, Reppo, Open, with Dolphin as the open-model backend
 
-## One-line description
-Openpath is a console that lets anyone define a policy for an AI agent, run a case through it, and see the exact path the decision took — with hard limits enforced, open-model judgment where needed, and a feedback score that improves the next run.
+## In one line
+Openpath is a console where anyone writes a policy for an AI agent, runs a case through it, and sees the exact path the decision took, with hard limits enforced in code, open-model judgment where judgment is needed, and a feedback score that shapes the next run.
 
-## Core loop (must be demoable)
-1. User defines or selects a policy in plain language (example: invoice/expense approval).
-2. User submits a case (structured data or text).
-3. System compiles the policy into an explicit reasoning graph via SERV Reasoning.
-4. Graph executes: script/code nodes for hard rules and limits; model nodes (via Dolphin or SERV catalog) only for judgment.
-5. Kite Passport identity + spending limits gate any payment-related action.
-6. Decision + full path (trace) is shown.
-7. Reppo Evaluation API scores the outcome; feedback is stored and affects the next identical case.
+## The core loop
+1. Write a policy: plain language for the model, plus an exact spending limit, approved vendors and known PO numbers for the code checks.
+2. Submit a case: amount, vendor, invoice or PO number, and notes.
+3. Hard rules run as code. If a rule decides the case, the model step is skipped.
+4. The judgment step runs on an open model through Dolphin, or on SERV Reasoning.
+5. Kite Passport identity and session limits join the path when the `kpass` CLI is connected.
+6. The console shows the decision and the full path.
+7. Reppo's Evaluation API scores the decision. The score and critique are stored.
+8. Running the same case again carries that feedback forward and shows the score change.
 
-## Why this wins
-- Directly answers OpenServ’s stated ask: map workflows, inspect why every decision happens, control each step (Graph Sharding style).
-- Integrates the partner stacks as required pieces, not optional add-ons.
-- Complete, visible end-to-end loop matching patterns of winners across agent hackathons.
-- Works for individuals, solo builders, freelancers, or teams.
+## Why it fits OpenServ's direction
+- It maps a workflow into explicit steps and shows why every decision happened.
+- Each step is controlled: rules are code, judgment is a model call, and the boundary is visible.
+- Every partner integration is part of the working flow.
+- It serves individuals, solo builders, freelancers and teams.
 
-## Minimal viable demo (priority for remaining time)
-- One predefined policy (invoice or expense approval).
-- One case input form.
-- Visible graph / step list showing code vs model nodes.
-- SERV Reasoning call with system prompt that produces a structured decision + reasoning summary.
-- Stub or real Kite limit check.
-- One Reppo evaluation submit + score display.
-- Re-run button that shows a different path or score after feedback.
-- Public repo + short write-up + X post.
+## Submission checklist
+- [x] Public GitHub repository
+- [x] Working console with the full loop
+- [ ] Deployed demo link or short video
+- [ ] Write-up: see [SUBMISSION.md](SUBMISSION.md)
+- [ ] X post tagging @openservai
+- [ ] Submission form: https://openserv.typeform.com/submissions02
 
-## What to defer
-- Live on-chain payment execution
-- Multi-user accounts / roles
-- Full visual graph editor
-- Multiple policies library
-- Production auth
-
-## Submission requirements
-- Public GitHub repo
-- Demo link or video
-- Short write-up explaining the project, how SERV Reasoning is used, and which track(s)
-- X post tagging @openservai with link in the form
-- Form: https://openserv.typeform.com/submissions02
-
-## Environment notes
-- Builder is phone-first (Replit Agent, Claude, etc.).
-- OpenServ API key available (credits from registration emails).
-- Focus on clear, readable code and a working demo over feature count.
+## Environment
+- The project is built to be developed from a phone as well as a desktop.
+- Configuration lives in environment variables. See `.env.example`.

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-// Where demo data lives. Set OPENPATH_DATA_DIR to a persistent disk (e.g. a Railway volume).
+// Where policy and history are stored. Set OPENPATH_DATA_DIR to a persistent disk (e.g. a Railway volume).
 export const dataDir =
   process.env.OPENPATH_DATA_DIR ??
   (process.env.VERCEL ? path.join(os.tmpdir(), "openpath") : path.join(process.cwd(), ".data"));

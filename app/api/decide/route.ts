@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { runCodeChecks } from "@/lib/checks";
-import { caseKey, latestScored } from "@/lib/history";
-import { kiteChecks } from "@/lib/kite";
+import { caseKey } from "@/lib/case";
+import { latestScored } from "@/lib/history";
 import { judge } from "@/lib/judge";
+import { kiteChecks } from "@/lib/kite";
 import { getPolicy } from "@/lib/policy";
 import type { Case, Decision } from "@/lib/types";
 
 export async function POST(req: Request) {
+  const started = Date.now();
   const body = await req.json();
   const c: Case = {
     amount: Number(body.amount),
@@ -15,6 +17,11 @@ export async function POST(req: Request) {
     notes: String(body.notes ?? ""),
   };
 
+  const policy = getPolicy();
+  if (!policy) {
+    return NextResponse.json({ error: "Save a policy first, then run a case." }, { status: 400 });
+  }
+
   // Feedback loop: look up the Reppo score from the last run of this same case.
   const prior = latestScored(caseKey(c))?.eval;
   const feedback = prior
@@ -22,47 +29,60 @@ export async function POST(req: Request) {
       (prior.critiques ?? []).map((k) => `${k.criterion}: ${k.score}/100`).join(", ")
     : undefined;
 
-  const policy = getPolicy();
-  if (!policy) return NextResponse.json({ error: "No policy set. Save a policy first." }, { status: 400 });
   const path = [...runCodeChecks(c, policy), ...(await kiteChecks(c))];
   path.push({
     step: "load_feedback",
     type: "code",
-    result: prior ? `previous score ${prior.score}/100` : "none yet",
-    detail: prior ? `verdict: ${prior.verdict}` : undefined,
+    result: prior ? `previous score ${prior.score}/100` : "first run",
+    detail: prior ? `verdict: ${prior.verdict}, route: ${prior.route}` : undefined,
   });
   const failed = path.filter((s) => s.result === "failed");
 
-  // Hard rule failed: deny without calling a model.
+  // A hard rule failed: the decision is made by code, so the model is not called.
   if (failed.length > 0) {
     path.push({
       step: "model_judgment",
       type: "model",
       result: "skipped",
-      detail: "Not called: a hard rule already failed, so no model judgment is needed",
+      detail: "A hard rule already decided this case, so no model judgment is needed.",
     });
     const out: Decision = {
       decision: "deny",
-      reason: `Failed: ${failed.map((s) => s.step).join(", ")}`,
+      reason: `Denied by rule: ${failed.map((s) => s.step.replace(/_/g, " ")).join(", ")}`,
       path,
+      ms: Date.now() - started,
     };
     return NextResponse.json(out);
   }
 
+  const t = Date.now();
   try {
     const j = await judge(policy.text, c, feedback);
     path.push({
       step: "model_judgment",
       type: "model",
       result: j.decision,
-      detail: j.failed.length ? `${j.reason}\nFell back because: ${j.failed.join(" | ")}` : j.reason,
+      detail: j.reason,
       provider: j.provider,
+      fallbacks: j.failed.length ? j.failed : undefined,
+      ms: Date.now() - t,
     });
-    return NextResponse.json({ decision: j.decision, reason: j.reason, path } satisfies Decision);
+    const out: Decision = { decision: j.decision, reason: j.reason, path, ms: Date.now() - started };
+    return NextResponse.json(out);
   } catch (e) {
-    path.push({ step: "model_judgment", type: "model", result: "error", detail: String(e) });
-    return NextResponse.json(
-      { decision: "escalate", reason: "Model step failed, sent to a human", path } satisfies Decision,
-    );
+    path.push({
+      step: "model_judgment",
+      type: "model",
+      result: "escalate",
+      detail: String(e).replace(/^Error: /, "").slice(0, 300),
+      ms: Date.now() - t,
+    });
+    const out: Decision = {
+      decision: "escalate",
+      reason: "The judgment step could not answer, so this case goes to a person.",
+      path,
+      ms: Date.now() - started,
+    };
+    return NextResponse.json(out);
   }
 }
