@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    run.evalId = await submitEval(getPolicy().text, c, decision);
+    run.evalId = await submitEval(getPolicy()?.text ?? "", c, decision);
     addRun(run);
     return NextResponse.json({ evalId: run.evalId });
   } catch (e) {

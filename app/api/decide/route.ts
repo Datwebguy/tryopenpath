@@ -22,6 +22,7 @@ export async function POST(req: Request) {
     : undefined;
 
   const policy = getPolicy();
+  if (!policy) return NextResponse.json({ error: "No policy set. Save a policy first." }, { status: 400 });
   const path = runCodeChecks(c, policy);
   path.push({
     step: "load_feedback",

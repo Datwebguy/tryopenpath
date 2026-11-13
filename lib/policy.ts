@@ -7,30 +7,23 @@ export type Policy = {
   pos: string[]; // known PO numbers
 };
 
-export const DEFAULT_POLICY: Policy = {
-  text:
-    "Approve the payment only if the amount is under the user-set limit, " +
-    "the invoice number matches a known PO, and the vendor is on the approved list. " +
-    "Otherwise deny and give the exact reason.",
-  limit: Number(process.env.KITE_STUB_LIMIT ?? 500),
-  vendors: ["Acme Supplies", "Globex Ltd", "Initech"],
-  pos: ["PO-1001", "PO-1002", "PO-1003"],
-};
-
-export const getPolicy = (): Policy => ({ ...DEFAULT_POLICY, ...readJson<Partial<Policy>>("policy.json", {}) });
+// No built-in policy. It exists only once the user has saved one.
+export const getPolicy = (): Policy | null => readJson<Policy | null>("policy.json", null);
 
 const list = (v: unknown): string[] =>
   Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean) : [];
 
-export function savePolicy(input: Partial<Policy>): Policy {
-  const cur = getPolicy();
+export function savePolicy(input: Partial<Policy>): { policy?: Policy; error?: string } {
+  const text = typeof input.text === "string" ? input.text.trim() : "";
   const limit = Number(input.limit);
-  const next: Policy = {
-    text: typeof input.text === "string" && input.text.trim() ? input.text.trim() : cur.text,
-    limit: Number.isFinite(limit) && limit > 0 ? limit : cur.limit,
-    vendors: input.vendors ? list(input.vendors) : cur.vendors,
-    pos: input.pos ? list(input.pos).map((p) => p.toUpperCase()) : cur.pos,
+  if (!text) return { error: "Policy text is required" };
+  if (!Number.isFinite(limit) || limit <= 0) return { error: "Spending limit must be above 0" };
+  const policy: Policy = {
+    text,
+    limit,
+    vendors: list(input.vendors),
+    pos: list(input.pos).map((p) => p.toUpperCase()),
   };
-  writeJson("policy.json", next);
-  return next;
+  writeJson("policy.json", policy);
+  return { policy };
 }

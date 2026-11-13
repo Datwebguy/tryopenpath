@@ -15,6 +15,8 @@ export default function Home() {
   const [policy, setPolicy] = useState<Policy | null>(null);
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [policyError, setPolicyError] = useState<string | null>(null);
+  const [policyLoaded, setPolicyLoaded] = useState(false);
 
   const loadHistory = useCallback(async () => {
     setHistory(await (await fetch("/api/history")).json());
@@ -22,7 +24,10 @@ export default function Home() {
 
   useEffect(() => {
     loadHistory();
-    fetch("/api/policy").then((r) => r.json()).then(setPolicy);
+    fetch("/api/policy").then((r) => r.json()).then((p) => {
+      setPolicy(p);
+      setPolicyLoaded(true);
+    });
   }, [loadHistory]);
 
   async function savePolicy(e: React.FormEvent<HTMLFormElement>) {
@@ -39,7 +44,10 @@ export default function Home() {
         pos: lines("pos"),
       }),
     });
-    setPolicy(await res.json());
+    const body = await res.json();
+    if (!res.ok) return setPolicyError(body.error);
+    setPolicyError(null);
+    setPolicy(body);
     setSaved(true);
     setEditing(false);
   }
@@ -73,7 +81,13 @@ export default function Home() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(c),
     });
-    const decision: Decision = await res.json();
+    const body = await res.json();
+    if (!res.ok) {
+      setLoading(false);
+      setEvalError(body.error ?? "Request failed");
+      return;
+    }
+    const decision: Decision = body;
     setResult(decision);
     setLoading(false);
 
@@ -105,39 +119,49 @@ export default function Home() {
     <main>
       <h1>Openpath</h1>
       <p>See the exact path every agent decision takes.</p>
-      {policy && (
+      {policyLoaded && (
         <div className="policy">
-          <strong>Policy:</strong> {policy.text}
-          <div className="detail">
-            Limit ${policy.limit} · {policy.vendors.length} approved vendors · {policy.pos.length} known POs
-            {saved && " · saved"}
-          </div>
-          <button type="button" style={{ marginTop: 8 }} onClick={() => setEditing(!editing)}>
-            {editing ? "Cancel" : "Edit rules"}
-          </button>
-          {editing && (
+          {policy ? (
+            <>
+              <strong>Policy:</strong> {policy.text}
+              <div className="detail">
+                Limit ${policy.limit} · {policy.vendors.length} approved vendors · {policy.pos.length} known POs
+                {saved && " · saved"}
+              </div>
+              <button type="button" style={{ marginTop: 8 }} onClick={() => setEditing(!editing)}>
+                {editing ? "Cancel" : "Edit rules"}
+              </button>
+            </>
+          ) : (
+            <strong>No policy yet. Set your rules to start.</strong>
+          )}
+          {(editing || !policy) && (
             <form onSubmit={savePolicy} style={{ marginTop: 10 }}>
               <label className="detail">Policy text (read by the judgment model)</label>
-              <textarea name="text" rows={4} defaultValue={policy.text} />
-              <label className="detail">Spending limit (USD, checked by code)</label>
-              <input name="limit" type="number" step="0.01" defaultValue={policy.limit} />
+              <textarea name="text" rows={4} defaultValue={policy?.text ?? ""} required />
+              <label className="detail">Spending limit in USD (checked by code)</label>
+              <input name="limit" type="number" step="0.01" defaultValue={policy?.limit ?? ""} required />
               <label className="detail">Approved vendors, one per line (checked by code)</label>
-              <textarea name="vendors" rows={4} defaultValue={policy.vendors.join("\n")} />
+              <textarea name="vendors" rows={4} defaultValue={policy?.vendors.join("\n") ?? ""} />
               <label className="detail">Known PO numbers, one per line (checked by code)</label>
-              <textarea name="pos" rows={4} defaultValue={policy.pos.join("\n")} />
+              <textarea name="pos" rows={4} defaultValue={policy?.pos.join("\n") ?? ""} />
+              {policyError && <div className="detail">{policyError}</div>}
               <button>Save rules</button>
             </form>
           )}
         </div>
       )}
 
+      {policy && (
       <form onSubmit={submit}>
-        <input name="amount" type="number" step="0.01" placeholder="Amount (USD)" defaultValue="250" required />
-        <input name="vendor" placeholder="Vendor" defaultValue="Acme Supplies" required />
-        <input name="invoiceNumber" placeholder="Invoice / PO number" defaultValue="PO-1001" required />
+        <input name="amount" type="number" step="0.01" placeholder="Amount (USD)" required />
+        <input name="vendor" placeholder="Vendor" required />
+        <input name="invoiceNumber" placeholder="Invoice / PO number" required />
         <textarea name="notes" placeholder="Notes" rows={3} />
         <button disabled={loading}>{loading ? "Running..." : "Run case"}</button>
       </form>
+      )}
+      {evalError && !result && <p className="detail">{evalError}</p>}
 
       {result && (
         <section>

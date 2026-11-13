@@ -9,20 +9,20 @@ looks suspicious or needs a human. Return only valid JSON:
 export type ModelJudgment = { decision: "approve" | "escalate"; reason: string };
 export type Judged = ModelJudgment & { provider: string };
 
-type Backend = { name: string; url: string; key?: string; model: string };
+type Backend = { name: string; url: string; key?: string; model?: string };
 
 const dolphin = (): Backend => ({
   name: "dolphin",
   url: "https://lighthouse.dphn.ai/run/text-v/v1/chat/completions",
   key: process.env.DOLPHIN_API_KEY,
-  model: process.env.DOLPHIN_MODEL ?? "deepseek-ai/DeepSeek-V4.1-Flash",
+  model: process.env.DOLPHIN_MODEL,
 });
 
 const serv = (): Backend => ({
   name: "serv",
   url: "https://inference-api.openserv.ai/v1/chat/completions",
   key: process.env.SERV_API_KEY,
-  model: process.env.SERV_MODEL ?? "gpt-5-mini",
+  model: process.env.SERV_MODEL,
 });
 
 async function call(b: Backend, policy: string, c: Case, feedback?: string): Promise<ModelJudgment> {
@@ -58,9 +58,9 @@ async function call(b: Backend, policy: string, c: Case, feedback?: string): Pro
 
 // Judgment node. Open model (Dolphin) first when configured, SERV catalog as fallback.
 export async function judge(policy: string, c: Case, feedback?: string): Promise<Judged> {
-  const order = [dolphin(), serv()].filter((b) => b.key);
+  const order = [dolphin(), serv()].filter((b) => b.key && b.model);
   if (process.env.JUDGE_PROVIDER === "serv") order.sort((a) => (a.name === "serv" ? -1 : 1));
-  if (order.length === 0) throw new Error("No SERV_API_KEY or DOLPHIN_API_KEY set");
+  if (order.length === 0) throw new Error("Set an API key and model (SERV_API_KEY + SERV_MODEL, or DOLPHIN_API_KEY + DOLPHIN_MODEL)");
 
   const errors: string[] = [];
   for (const b of order) {

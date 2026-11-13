@@ -6,5 +6,6 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
-  return NextResponse.json(savePolicy(await req.json()));
+  const { policy, error } = savePolicy(await req.json());
+  return error ? NextResponse.json({ error }, { status: 400 }) : NextResponse.json(policy);
 }
