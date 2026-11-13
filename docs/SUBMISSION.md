@@ -29,5 +29,9 @@ https://github.com/Datwebguy/tryopenpath
 ## X post
 Add the link to the post tagging @openservai here.
 
+## Before submitting
+- Enable data collection in the OpenServ organization settings so OpenServ can verify the project's use of SERV: https://console.openserv.ai/settings/organization
+- Post the project on X and tag @openservai.
+
 ## Submission form
 https://openserv.typeform.com/submissions02

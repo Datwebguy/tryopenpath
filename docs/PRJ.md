@@ -28,6 +28,7 @@ Openpath is a console where anyone writes a policy for an AI agent, runs a case 
 ## Submission checklist
 - [x] Public GitHub repository
 - [x] Working console with the full loop
+- [ ] Data collection enabled in the OpenServ organization settings: https://console.openserv.ai/settings/organization
 - [ ] Deployed demo link or short video
 - [ ] Write-up: see [SUBMISSION.md](SUBMISSION.md)
 - [ ] X post tagging @openservai
