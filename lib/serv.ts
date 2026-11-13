@@ -10,7 +10,7 @@ looks suspicious or needs a human. Return only valid JSON:
 export type ModelJudgment = { decision: "approve" | "escalate"; reason: string };
 
 // Judgment node. Called through SERV Reasoning (chat completions).
-export async function judge(c: Case): Promise<ModelJudgment> {
+export async function judge(c: Case, feedback?: string): Promise<ModelJudgment> {
   const res = await fetch("https://inference-api.openserv.ai/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -21,7 +21,14 @@ export async function judge(c: Case): Promise<ModelJudgment> {
       model: process.env.SERV_MODEL ?? "gpt-5-mini",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: `Policy: ${POLICY_TEXT}\nCase: ${JSON.stringify(c)}` },
+        {
+          role: "user",
+          content:
+            `Policy: ${POLICY_TEXT}\nCase: ${JSON.stringify(c)}` +
+            (feedback
+              ? `\nA previous run of this same case was scored. Address this feedback:\n${feedback}`
+              : ""),
+        },
       ],
     }),
   });

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { runCodeChecks } from "@/lib/checks";
+import { caseKey, latestScored } from "@/lib/history";
 import { judge } from "@/lib/serv";
 import type { Case, Decision } from "@/lib/types";
 
@@ -12,7 +13,20 @@ export async function POST(req: Request) {
     notes: String(body.notes ?? ""),
   };
 
+  // Feedback loop: look up the Reppo score from the last run of this same case.
+  const prior = latestScored(caseKey(c))?.eval;
+  const feedback = prior
+    ? `Score ${prior.score}/100 (${prior.verdict}). ` +
+      (prior.critiques ?? []).map((k) => `${k.criterion}: ${k.critique}`).join(" ")
+    : undefined;
+
   const path = runCodeChecks(c);
+  path.push({
+    step: "load_feedback",
+    type: "code",
+    result: prior ? `previous score ${prior.score}/100` : "none yet",
+    detail: prior ? `verdict: ${prior.verdict}` : undefined,
+  });
   const failed = path.filter((s) => s.result === "failed");
 
   // Hard rule failed: deny without calling a model.
@@ -27,7 +41,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const j = await judge(c);
+    const j = await judge(c, feedback);
     path.push({ step: "model_judgment", type: "model", result: j.decision, detail: j.reason });
     return NextResponse.json({ decision: j.decision, reason: j.reason, path } satisfies Decision);
   } catch (e) {

@@ -12,3 +12,9 @@ export const addRun = (run: Run) => void runs.push(run);
 export const findRunByEval = (evalId: string) => runs.find((r) => r.evalId === evalId);
 
 export const runsForCase = (key: string) => runs.filter((r) => r.caseKey === key);
+
+export const allRuns = () => [...runs].reverse();
+
+// Most recent run of this case whose Reppo score has settled.
+export const latestScored = (key: string) =>
+  [...runs].reverse().find((r) => r.caseKey === key && r.eval?.status === "SETTLED");
