@@ -7,7 +7,7 @@ looks suspicious or needs a human. Return only valid JSON:
 { "decision": "approve" | "escalate", "reason": "string" }`;
 
 export type ModelJudgment = { decision: "approve" | "escalate"; reason: string };
-export type Judged = ModelJudgment & { provider: string };
+export type Judged = ModelJudgment & { provider: string; failed: string[] };
 
 type Backend = { name: string; url: string; key?: string; model?: string };
 
@@ -66,9 +66,9 @@ export async function judge(policy: string, c: Case, feedback?: string): Promise
   for (const b of order) {
     try {
       const out = await call(b, policy, c, feedback);
-      return { ...out, provider: `${b.name} (${b.model})` };
+      return { ...out, provider: `${b.name} (${b.model})`, failed: errors };
     } catch (e) {
-      errors.push(String(e));
+      errors.push(String(e).replace(/^Error: /, "").slice(0, 200));
     }
   }
   throw new Error(errors.join(" | "));

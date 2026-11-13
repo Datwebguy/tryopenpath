@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       step: "model_judgment",
       type: "model",
       result: j.decision,
-      detail: j.reason,
+      detail: j.failed.length ? `${j.reason}\nFell back because: ${j.failed.join(" | ")}` : j.reason,
       provider: j.provider,
     });
     return NextResponse.json({ decision: j.decision, reason: j.reason, path } satisfies Decision);
