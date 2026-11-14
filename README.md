@@ -45,11 +45,12 @@ These are real runs on the live site, with real SERV Reasoning calls and real Re
 
 | What happens | Result | Decided by | Reppo |
 |---|---|---|---|
-| [A routine invoice, approved](https://openpath.up.railway.app/run/bd115604e0) | Approved | SERV Reasoning | 96/100 |
-| [Over the limit, stopped by a rule](https://openpath.up.railway.app/run/d3094b7e92) | Denied | A rule. The AI is never asked. | 100/100 |
-| [Notes that sound like fraud, sent to a person](https://openpath.up.railway.app/run/2f7d7d0e64) | Sent to a person | SERV Reasoning | 100/100 |
+| [Bank details changed, payment held](https://openpath.up.railway.app/run/b492a4e982) | Held for a person | Bank account check. The AI is never asked. | 100/100 |
+| [A fake urgent request from the CEO, caught](https://openpath.up.railway.app/run/2f7d7d0e64) | Sent to a person | SERV Reasoning | 100/100 |
 | [An attack hidden in the notes, caught](https://openpath.up.railway.app/run/ec659067be) | Sent to a person | SERV Reasoning refused the instruction | 100/100 |
+| [Over the limit, stopped by a rule](https://openpath.up.railway.app/run/d3094b7e92) | Denied | A rule. The AI is never asked. | 100/100 |
 | [A rule written in plain English](https://openpath.up.railway.app/run/5f08fb059c) | Sent to a person | The owner's own rule. The AI is never asked. | 100/100 |
+| [A routine invoice, approved](https://openpath.up.railway.app/run/bd115604e0) | Approved | SERV Reasoning | 96/100 |
 
 <p align="center"><img src="docs/images/11-showcase.png" alt="The showcase of real runs on the live site" width="100%"></p>
 
@@ -71,9 +72,9 @@ These are real runs on the live site, with real SERV Reasoning calls and real Re
 ## A tour of the console
 
 ### Start with a policy, then add rules in your own words
-Vendor and PO lists are quick to build. Everything you save is yours. Write a rule as a sentence and SERV Reasoning turns it into an exact rule, shown in plain language before you save.
+Vendor and PO lists are quick to build, and each vendor's bank account can be kept on file so a changed account is caught. Write a rule as a sentence and SERV Reasoning turns it into an exact rule, shown in plain language before you save.
 
-<p align="center"><img src="docs/images/02-policy.png" alt="Policy editor with vendor and PO tags and two rules written in plain words, each shown with how SERV understood it" width="60%"></p>
+<p align="center"><img src="docs/images/02-policy.png" alt="Policy editor with vendor and PO tags, vendor bank accounts on file, and a rule written in plain words shown with how SERV understood it" width="60%"></p>
 
 Rules can use the amount, the vendor, the PO number, the notes, the day of the week, and how many earlier runs the vendor has. Each rule can deny a case or send it to a person.
 

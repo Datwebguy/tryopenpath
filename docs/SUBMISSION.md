@@ -4,7 +4,7 @@
 Openpath
 
 ## One line
-Guardrails you can prove, for AI that approves payments.
+Stop invoice fraud before your AI agent pays.
 
 ## Tracks
 Kite, Reppo and Open.
@@ -16,7 +16,11 @@ https://openpath.up.railway.app
 https://github.com/Datwebguy/tryopenpath
 
 ## What it does
-AI agents are starting to approve invoices and payments. When one says yes, nobody can see why, or prove the rules were followed. Openpath puts every decision on a path you can inspect.
+Fraudsters already target whoever pays the invoices: a changed bank account, an urgent message from the "CEO", a note telling the reviewer to skip checks. AI agents now pay invoices too, and an AI can be talked into a yes. Openpath sits between the agent and the money and puts every payment decision on a path you can inspect.
+
+Who it is for: small finance teams, bookkeepers, and anyone building an AI agent that pays bills.
+
+- **Catches changed bank details.** Each vendor's bank account is kept on file. If an invoice asks to be paid somewhere else, the payment is held before money moves, with no AI involved.
 
 - **Rules the AI cannot override.** Spending limits, known POs, approved vendors and the owner's own rules are checked exactly, every time. When a rule decides, the AI is never asked, so it cannot be talked into a yes.
 - **AI only for judgment.** SERV Reasoning reads what rules cannot, such as notes that sound like fraud. It treats those notes as untrusted text and never follows instructions inside them.
@@ -27,11 +31,12 @@ Real runs on the live site:
 
 | What happens | Result | Decided by | Reppo |
 |---|---|---|---|
-| [A routine invoice, approved](https://openpath.up.railway.app/run/bd115604e0) | Approved | SERV Reasoning | 96/100 |
-| [Over the limit, stopped by a rule](https://openpath.up.railway.app/run/d3094b7e92) | Denied | A rule. The AI is never asked. | 100/100 |
-| [Notes that sound like fraud, sent to a person](https://openpath.up.railway.app/run/2f7d7d0e64) | Sent to a person | SERV Reasoning | 100/100 |
+| [Bank details changed, payment held](https://openpath.up.railway.app/run/b492a4e982) | Held for a person | Bank account check. The AI is never asked. | 100/100 |
+| [A fake urgent request from the CEO, caught](https://openpath.up.railway.app/run/2f7d7d0e64) | Sent to a person | SERV Reasoning | 100/100 |
 | [An attack hidden in the notes, caught](https://openpath.up.railway.app/run/ec659067be) | Sent to a person | SERV Reasoning refused the instruction | 100/100 |
+| [Over the limit, stopped by a rule](https://openpath.up.railway.app/run/d3094b7e92) | Denied | A rule. The AI is never asked. | 100/100 |
 | [A rule written in plain English](https://openpath.up.railway.app/run/5f08fb059c) | Sent to a person | The owner's own rule. The AI is never asked. | 100/100 |
+| [A routine invoice, approved](https://openpath.up.railway.app/run/bd115604e0) | Approved | SERV Reasoning | 96/100 |
 
 ## How SERV Reasoning is used
 SERV Reasoning does two jobs.

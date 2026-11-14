@@ -150,7 +150,7 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
             <div className="acc-add">
               <input id="accvendor" list="acc-vendors" value={accVendor} onChange={(e) => setAccVendor(e.target.value)} placeholder="Vendor" />
               <datalist id="acc-vendors">{vendors.map((v) => <option key={v} value={v} />)}</datalist>
-              <input value={accNumber} onChange={(e) => setAccNumber(e.target.value)} placeholder="Account or IBAN" autoComplete="off"
+              <input value={accNumber} onChange={(e) => setAccNumber(e.target.value)} placeholder="Account number" autoComplete="off"
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addAccount(); } }} />
               <button type="button" className="btn secondary" onClick={addAccount} disabled={!accVendor.trim() || accNumber.replace(/[\s-]/g, "").length < 4}>Add</button>
             </div>
