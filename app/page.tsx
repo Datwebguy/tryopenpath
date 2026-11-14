@@ -15,6 +15,8 @@ import PathGraph, { PathSkeleton } from "./components/PathGraph";
 import PolicyCard from "./components/PolicyCard";
 import ScoreCard from "./components/ScoreCard";
 import Stepper from "./components/Stepper";
+import Intro from "./components/Intro";
+import Showcase from "./components/Showcase";
 
 const emptyDraft: Draft = { amount: "", vendor: "", invoiceNumber: "", notes: "" };
 
@@ -41,6 +43,8 @@ export default function Home() {
   const [evalMsg, setEvalMsg] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [hasShowcase, setHasShowcase] = useState(false);
+  const onShowcase = useCallback((has: boolean) => setHasShowcase(has), []);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const loadHistory = useCallback(async () => {
@@ -194,9 +198,12 @@ export default function Home() {
       </header>
 
       <main className="wrap">
-        <section className="hero">
-          <h1>See the exact path every decision takes.</h1>
-          <p>Write your policy once. Fixed rules are checked exactly, judgment calls go to an AI, and every step is on the record, scored, and ready to improve the next run.</p>
+        <Intro hasShowcase={hasShowcase} />
+        <Showcase onLoaded={onShowcase} />
+
+        <section className="hero" id="try">
+          <h2>Try it yourself</h2>
+          <p>Write a policy, add a rule in your own words, and run a case. Every step shows up live.</p>
           <Stepper done={done} />
         </section>
 
