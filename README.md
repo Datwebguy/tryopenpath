@@ -7,17 +7,22 @@
   <img alt="Next.js 15" src="https://img.shields.io/badge/Next.js-15-0f1729">
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178c6">
   <img alt="SERV Hackathon Edition 02" src="https://img.shields.io/badge/SERV%20Hackathon-Edition%2002-6d28d9">
+  <a href="https://openpath.up.railway.app"><img alt="Live demo" src="https://img.shields.io/badge/live%20demo-openpath.up.railway.app-15803d"></a>
 </p>
 
-<h3 align="center">Write your policy once. Run a case. See every step of the decision, scored and ready to improve the next run.</h3>
+<h3 align="center">Guardrails you can prove, for AI that approves payments.</h3>
+
+<p align="center"><b><a href="https://openpath.up.railway.app">Try it live: openpath.up.railway.app</a></b></p>
 
 <p align="center">
-  <img src="docs/images/06-rerun-feedback.png" alt="Openpath console showing an approved decision, its full path, a Reppo score, and the score across runs" width="100%">
+  <img src="docs/images/00-landing.png" alt="The Openpath landing page: the problem, three ideas, and buttons to see it in action or try it" width="100%">
 </p>
 
 ---
 
 ## What Openpath does
+
+AI agents are starting to approve invoices and payments. When one says yes, nobody can see why, or prove the rules were followed.
 
 Openpath is a console for AI decisions. You describe a policy in plain words, set the exact limits that must never bend, and run real cases through it. Every case produces a decision and the **complete path** behind it.
 
@@ -30,6 +35,20 @@ Openpath is a console for AI decisions. You describe a policy in plain words, se
 | **Scored by Reppo** | Independent evaluators score each decision and explain why. |
 | **Feedback that sticks** | The score and critique are saved and shape the next run of the same case, so you see the improvement. |
 | **Shareable runs** | Send a link to any run. It opens a read-only page with the decision, the path and the live score. |
+
+## See it in action
+
+These are real runs on the live site, with real SERV Reasoning calls and real Reppo scores. Click any one to see its full path.
+
+| What happens | Result | Decided by | Reppo |
+|---|---|---|---|
+| [A routine invoice, approved](https://openpath.up.railway.app/run/bd115604e0) | Approved | SERV Reasoning | 96/100 |
+| [Over the limit, stopped by a rule](https://openpath.up.railway.app/run/d3094b7e92) | Denied | A rule. The AI is never asked. | 100/100 |
+| [Notes that sound like fraud, sent to a person](https://openpath.up.railway.app/run/2f7d7d0e64) | Sent to a person | SERV Reasoning | 100/100 |
+| [An attack hidden in the notes, caught](https://openpath.up.railway.app/run/ec659067be) | Sent to a person | SERV Reasoning refused the instruction | 100/100 |
+| [A rule written in plain English](https://openpath.up.railway.app/run/5f08fb059c) | Sent to a person | The owner's own rule. The AI is never asked. | 100/100 |
+
+<p align="center"><img src="docs/images/11-showcase.png" alt="The showcase of real runs on the live site" width="100%"></p>
 
 ## How it works
 
@@ -155,7 +174,7 @@ The volume keeps your policy, history and scores across deploys.
 ## Documentation
 
 - [Project overview](docs/PRJ.md) · [Product](docs/PRODUCT.md) · [Architecture and routes](docs/ARCHITECTURE.md)
-- [Build brief](docs/AGENT_PROMPT.md) · [Plan](docs/PLAN.md) · [Resources](docs/RESOURCES.md) · [Submission](docs/SUBMISSION.md)
+- [Build brief](docs/AGENT_PROMPT.md) · [Plan](docs/PLAN.md) · [Resources](docs/RESOURCES.md) · [Submission](docs/SUBMISSION.md) · [Demo script](docs/DEMO.md)
 
 ## Security
 

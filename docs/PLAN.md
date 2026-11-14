@@ -17,7 +17,7 @@
 - [x] README, `.env.example`, license and documentation
 
 ## Next
-1. Deploy on Railway with a volume for `/data`.
+1. Live on Railway: https://openpath.up.railway.app
 2. Record a short walkthrough: policy, case, path, score, re-run.
 3. Write the X post tagging @openservai.
 4. Complete the submission form: https://openserv.typeform.com/submissions02

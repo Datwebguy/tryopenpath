@@ -30,7 +30,8 @@ Openpath is a console where anyone writes a policy for an AI agent, runs a case 
 - [x] Public GitHub repository
 - [x] Working console with the full loop
 - [ ] Data collection enabled in the OpenServ organization settings: https://console.openserv.ai/settings/organization
-- [ ] Deployed demo link or short video
+- [x] Live demo: https://openpath.up.railway.app
+- [ ] Short demo video (script in [DEMO.md](DEMO.md))
 - [ ] Write-up: see [SUBMISSION.md](SUBMISSION.md)
 - [ ] X post tagging @openservai
 - [ ] Submission form: https://openserv.typeform.com/submissions02
