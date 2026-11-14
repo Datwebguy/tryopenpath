@@ -7,7 +7,7 @@
 **Tracks:** Kite, Reppo, Open
 
 ## In one line
-Openpath is a console where anyone writes a policy for an AI agent, runs a case through it, and sees the exact path the decision took, with exact limits enforced every time, AI judgment where judgment is needed, and a feedback score that shapes the next run.
+Openpath stops invoice fraud before an AI agent pays. It is a console where anyone writes a policy for an AI agent, runs a case through it, and sees the exact path the decision took, with exact limits enforced every time, AI judgment where judgment is needed, and a feedback score that shapes the next run.
 
 ## The core loop
 1. Write a policy: plain words for the AI, plus an exact spending limit, approved vendors and known PO numbers.

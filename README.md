@@ -10,7 +10,7 @@
   <a href="https://openpath.up.railway.app"><img alt="Live demo" src="https://img.shields.io/badge/live%20demo-openpath.up.railway.app-15803d"></a>
 </p>
 
-<h3 align="center">Guardrails you can prove, for AI that approves payments.</h3>
+<h3 align="center">Stop invoice fraud before your AI agent pays.</h3>
 
 <p align="center"><b><a href="https://openpath.up.railway.app">Try it live: openpath.up.railway.app</a></b></p>
 
@@ -22,12 +22,15 @@
 
 ## What Openpath does
 
-AI agents are starting to approve invoices and payments. When one says yes, nobody can see why, or prove the rules were followed.
+Fraudsters already target whoever pays the invoices: a changed bank account, an urgent message from the "CEO", a note telling the reviewer to skip checks. Now AI agents pay invoices too, and an AI can be talked into a yes.
 
-Openpath is a console for AI decisions. You describe a policy in plain words, set the exact limits that must never bend, and run real cases through it. Every case produces a decision and the **complete path** behind it.
+**Openpath sits between the agent and the money.** It is built for small finance teams, bookkeepers, and anyone building an AI agent that pays bills.
+
+Openpath is a console for AI payment decisions. You describe a policy in plain words, set the exact limits that must never bend, and run real cases through it. Every case produces a decision and the **complete path** behind it.
 
 | | |
 |---|---|
+| **Catches changed bank details** | Keep each vendor's bank account on file. If an invoice asks to be paid somewhere else, the payment is held before money moves, with no AI involved. |
 | **Rules in your own words** | Write a rule as a sentence. SERV Reasoning turns it into an exact rule you can read, and it runs the same way every time. |
 | **Fixed rules, checked exactly** | Spending limits, PO numbers, vendor lists and required fields are checked the same way every time. Same case, same answer. |
 | **AI judgment where it counts** | The AI steps in only for what needs judgment, such as reading the notes for anything unusual. |

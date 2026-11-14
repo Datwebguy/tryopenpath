@@ -5,8 +5,8 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font" });
 
 export const metadata = {
-  title: "Openpath",
-  description: "Write a policy, run a case, and see the exact path every agent decision takes.",
+  title: "Openpath: stop invoice fraud before your AI agent pays",
+  description: "Exact rules the AI cannot override, AI judgment only where it is needed, and an independent score on every payment decision.",
 };
 
 export const viewport = { themeColor: "#ffffff", colorScheme: "light" };

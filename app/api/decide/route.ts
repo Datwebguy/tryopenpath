@@ -9,6 +9,7 @@ import { judge } from "@/lib/judge";
 import { kiteChecks } from "@/lib/kite";
 import { guard } from "@/lib/limit";
 import { getPolicy } from "@/lib/policy";
+import { maskAccount } from "@/lib/account";
 import { describeCond, ruleMatches, type RuleContext } from "@/lib/rules";
 import type { Decision, Step } from "@/lib/types";
 import { workspace } from "@/lib/workspace";
@@ -73,7 +74,8 @@ export async function POST(req: Request) {
   };
 
   const failed = path.filter((s) => s.result === "failed");
-  const sentUp = path.filter((s) => s.step.startsWith("rule_") && s.result === "escalate");
+  const sentUp = path.filter((s) => s.type === "code" && s.result === "escalate");
+  const bankChanged = sentUp.some((s) => s.step === "bank_account");
 
   // A rule already decided this case, so the AI judgment is not needed.
   if (failed.length > 0 || sentUp.length > 0) {
@@ -86,13 +88,22 @@ export async function POST(req: Request) {
     return finish(
       failed.length > 0
         ? { decision: "deny", reason: `Denied by rule: ${failed.map((s) => name(s).toLowerCase()).join(", ")}`, path, ms: Date.now() - started }
-        : { decision: "escalate", reason: `Sent to a person by rule: ${sentUp.map((s) => name(s).toLowerCase()).join(", ")}`, path, ms: Date.now() - started },
+        : {
+            decision: "escalate",
+            reason: bankChanged
+              ? "Held: the bank details changed. Confirm with the vendor using contact details you already have before paying."
+              : `Sent to a person by rule: ${sentUp.map((s) => name(s).toLowerCase()).join(", ")}`,
+            path,
+            ms: Date.now() - started,
+          },
     );
   }
 
   const t = Date.now();
   try {
-    const j = await judge(policy.text, c, feedback);
+    // The AI only needs the last four digits of an account.
+    const forAI = c.bankAccount ? { ...c, bankAccount: maskAccount(c.bankAccount) } : c;
+    const j = await judge(policy.text, forAI, feedback);
     path.push({
       step: "model_judgment",
       type: "model",

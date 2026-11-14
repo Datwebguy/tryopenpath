@@ -3,7 +3,7 @@
 import type { Policy } from "@/lib/policy";
 import { PlayIcon } from "./Icons";
 
-export type Draft = { amount: string; vendor: string; invoiceNumber: string; notes: string };
+export type Draft = { amount: string; vendor: string; invoiceNumber: string; notes: string; bankAccount: string };
 
 type Props = {
   policy: Policy;
@@ -47,6 +47,10 @@ export default function CaseForm({ policy, draft, onChange, onRun, loading }: Pr
           <label className="label" htmlFor="vendor">Vendor</label>
           <input id="vendor" list="vendor-list" value={draft.vendor} onChange={set("vendor")} required placeholder="Start typing" />
           <datalist id="vendor-list">{policy.vendors.map((v) => <option key={v} value={v} />)}</datalist>
+        </div>
+        <div className="field">
+          <label className="label" htmlFor="bank">Pays to account <span className="opt">optional</span></label>
+          <input id="bank" value={draft.bankAccount} onChange={set("bankAccount")} placeholder="IBAN or account number on the invoice" autoComplete="off" />
         </div>
         <div className="field">
           <label className="label" htmlFor="notes">Notes <span className="opt">optional</span></label>

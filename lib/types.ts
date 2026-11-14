@@ -3,6 +3,7 @@ export type Case = {
   vendor: string;
   invoiceNumber: string;
   notes: string;
+  bankAccount?: string; // the account this invoice pays to
 };
 
 export type Step = {

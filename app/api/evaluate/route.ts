@@ -4,6 +4,7 @@ import { readBody } from "@/lib/input";
 import { guard } from "@/lib/limit";
 import { getPolicy } from "@/lib/policy";
 import { describeRule } from "@/lib/rules";
+import { maskAccount } from "@/lib/account";
 import { reppoConfigured, submitEval } from "@/lib/reppo";
 import { workspace } from "@/lib/workspace";
 
@@ -36,7 +37,8 @@ export async function POST(req: Request) {
     const policyText =
       (policy?.text ?? "") +
       (rules.length ? `\nRules the policy owner added, enforced exactly:\n${rules.map((r) => `- ${r.label}: ${describeRule(r)}`).join("\n")}` : "");
-    const evalId = await submitEval(policyText, run.case, run.decision);
+    const masked = run.case.bankAccount ? { ...run.case, bankAccount: maskAccount(run.case.bankAccount) } : run.case;
+    const evalId = await submitEval(policyText, masked, run.decision);
     updateRun(ws, runId, { evalId });
     return NextResponse.json({ evalId, runId });
   } catch (e) {

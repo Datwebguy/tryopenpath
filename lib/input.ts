@@ -35,5 +35,6 @@ export function parseCase(body: Record<string, unknown>): { case?: Case; error?:
   const invoiceNumber = clean(body.invoiceNumber, 60);
   if (!vendor) return { error: "Enter the vendor." };
   if (!invoiceNumber) return { error: "Enter the invoice or PO number." };
-  return { case: { amount, vendor, invoiceNumber, notes: clean(body.notes, 2000) } };
+  const bankAccount = clean(body.bankAccount, 64);
+  return { case: { amount, vendor, invoiceNumber, notes: clean(body.notes, 2000), ...(bankAccount ? { bankAccount } : {}) } };
 }

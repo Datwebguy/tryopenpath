@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { findSharedRun, updateRun } from "@/lib/history";
 import { guard } from "@/lib/limit";
 import { readEval } from "@/lib/reppo";
+import { maskAccount } from "@/lib/account";
 
 // A shared run, read-only. The score is refreshed here while it is still being scored,
 // so viewers never need access to anything else. The internal score id is not shared.
@@ -29,5 +30,6 @@ export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }
 
   const { evalId, ...shared } = run;
   const stillScoring = !!evalId && run.eval?.status !== "SETTLED" && run.eval?.status !== "FAILED";
+  if (shared.case.bankAccount) shared.case = { ...shared.case, bankAccount: maskAccount(shared.case.bankAccount) };
   return NextResponse.json({ ...shared, pending: stillScoring });
 }

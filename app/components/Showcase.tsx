@@ -66,6 +66,7 @@ export default function Showcase({ onLoaded }: { onLoaded: (has: boolean) => voi
             </Link>
           );
         })}
+        {items.length % 3 !== 0 && (
         <button type="button" className="show-card cta-card" style={{ animationDelay: `${items.length * 70}ms` }}
           onClick={() => document.getElementById("try")?.scrollIntoView({ behavior: "smooth", block: "start" })}>
           <span className="cta-icon"><PlayIcon width={18} height={18} /></span>
@@ -73,6 +74,7 @@ export default function Showcase({ onLoaded }: { onLoaded: (has: boolean) => voi
           <p className="show-note">Write a policy, add a rule in your own words, and run a case. Every step shows up live, with a real score.</p>
           <span className="show-open">Try it yourself →</span>
         </button>
+        )}
       </div>
     </section>
   );

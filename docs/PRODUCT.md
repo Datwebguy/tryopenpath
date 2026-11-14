@@ -1,11 +1,16 @@
 # Openpath: Product
 
 ## What it is
-A console that gives anyone a clear, permanent path through every decision an AI agent makes under a policy.
+Openpath stops invoice fraud before an AI agent pays. It sits between the agent and the money and gives a clear, permanent path through every payment decision.
+
+## The problem
+Fraudsters target whoever pays the invoices: a changed bank account, an urgent message from the "CEO", a note telling the reviewer to skip checks. AI agents now pay invoices too, and an AI can be talked into a yes. Openpath holds the classic tricks with exact checks, uses AI only for judgment, and scores every decision independently.
 
 You write the rules once and run a case. You see which steps were fixed rules, which step used AI judgment and why, what limits were checked, and what the final decision was. Afterward the decision is scored, and the score and critique are kept so the next run of the same case can be sharper.
 
 ## Who it is for
+- **Small finance teams and bookkeepers** who let an AI agent approve or pay bills and need a second pair of eyes that cannot be talked around.
+- **Builders of AI agents that pay** who need a guardrail and proof in front of the money.
 - **Individuals** who want an agent to approve or spend within hard limits and leave a visible trail.
 - **Solo builders and freelancers** who need to show a client exactly why something was approved or denied.
 - **Small teams and companies** handling invoices, expenses or access who want to prove the reasoning and change one rule without rebuilding the agent.

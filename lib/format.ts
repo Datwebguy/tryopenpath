@@ -34,6 +34,7 @@ const STEP_LABELS: Record<string, string> = {
   vendor_allowlist: "Approved vendor",
   kite_identity: "Kite identity",
   kite_session_limit: "Kite session limit",
+  bank_account: "Bank account",
   load_feedback: "Past feedback",
   model_judgment: "AI judgment",
 };

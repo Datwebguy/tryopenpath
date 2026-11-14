@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { Policy } from "@/lib/policy";
+import { maskAccount } from "@/lib/account";
+import type { Policy, VendorAccount } from "@/lib/policy";
 import { describeRule, type Rule } from "@/lib/rules";
 import { money } from "@/lib/format";
 import { EditIcon, ShieldIcon, SparkIcon, XIcon } from "./Icons";
@@ -21,6 +22,9 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
   const [vendors, setVendors] = useState<string[]>(policy?.vendors ?? []);
   const [pos, setPos] = useState<string[]>(policy?.pos ?? []);
   const [rules, setRules] = useState<Rule[]>(policy?.rules ?? []);
+  const [accounts, setAccounts] = useState<VendorAccount[]>(policy?.accounts ?? []);
+  const [accVendor, setAccVendor] = useState("");
+  const [accNumber, setAccNumber] = useState("");
   const [ruleText, setRuleText] = useState("");
   const [compiling, setCompiling] = useState(false);
   const [ruleError, setRuleError] = useState<string | null>(null);
@@ -36,8 +40,18 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
       setVendors(policy.vendors);
       setPos(policy.pos);
       setRules(policy.rules ?? []);
+      setAccounts(policy.accounts ?? []);
     }
     setEditing(true);
+  }
+
+  function addAccount() {
+    const vendor = accVendor.trim();
+    const account = accNumber.trim();
+    if (!vendor || account.replace(/[\s-]/g, "").length < 4) return;
+    setAccounts([...accounts.filter((a) => a.vendor.toLowerCase() !== vendor.toLowerCase()), { vendor, account }]);
+    setAccVendor("");
+    setAccNumber("");
   }
 
   async function addRule() {
@@ -62,7 +76,7 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    const err = await onSave({ text, limit: Number(limit), vendors, pos, rules });
+    const err = await onSave({ text, limit: Number(limit), vendors, pos, rules, accounts });
     setSaving(false);
     setError(err);
     if (!err) setEditing(false);
@@ -94,6 +108,7 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
             <div><dt>Spending limit</dt><dd>{money(policy.limit)}</dd></div>
             <div><dt>Approved vendors</dt><dd>{policy.vendors.length}</dd></div>
             <div><dt>Known POs</dt><dd>{policy.pos.length}</dd></div>
+            <div><dt>Accounts on file</dt><dd>{policy.accounts?.length ?? 0}</dd></div>
             <div><dt>Your rules</dt><dd>{policy.rules?.length ?? 0}</dd></div>
           </dl>
           {policy.rules?.length > 0 && (
@@ -123,6 +138,24 @@ export default function PolicyCard({ policy, onSave, onReset }: Props) {
           </div>
           <TagInput label="Approved vendors" hint="Press Enter after each one." values={vendors} onChange={setVendors} placeholder="Add a vendor" />
           <TagInput label="Known PO numbers" hint="Press Enter after each one." values={pos} onChange={setPos} placeholder="Add a PO number" />
+          <div className="field">
+            <label className="label" htmlFor="accvendor">Vendor bank accounts on file <span className="opt">recommended</span></label>
+            {accounts.map((a) => (
+              <div className="acc-row" key={a.vendor}>
+                <span className="acc-vendor">{a.vendor}</span>
+                <span className="acc-num">{maskAccount(a.account)}</span>
+                <button type="button" className="rule-x" aria-label={`Remove account for ${a.vendor}`} onClick={() => setAccounts(accounts.filter((x) => x !== a))}><XIcon width={14} height={14} /></button>
+              </div>
+            ))}
+            <div className="acc-add">
+              <input id="accvendor" list="acc-vendors" value={accVendor} onChange={(e) => setAccVendor(e.target.value)} placeholder="Vendor" />
+              <datalist id="acc-vendors">{vendors.map((v) => <option key={v} value={v} />)}</datalist>
+              <input value={accNumber} onChange={(e) => setAccNumber(e.target.value)} placeholder="Account or IBAN" autoComplete="off"
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addAccount(); } }} />
+              <button type="button" className="btn secondary" onClick={addAccount} disabled={!accVendor.trim() || accNumber.replace(/[\s-]/g, "").length < 4}>Add</button>
+            </div>
+            <p className="hint">If an invoice asks to be paid into a different account, Openpath holds it. Changed bank details are the most common invoice-fraud trick.</p>
+          </div>
           <div className="field">
             <label className="label" htmlFor="newrule">Rules in your own words <span className="opt">optional</span></label>
             {rules.map((r) => (

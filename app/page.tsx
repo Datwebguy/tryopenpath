@@ -18,13 +18,14 @@ import Stepper from "./components/Stepper";
 import Intro from "./components/Intro";
 import Showcase from "./components/Showcase";
 
-const emptyDraft: Draft = { amount: "", vendor: "", invoiceNumber: "", notes: "" };
+const emptyDraft: Draft = { amount: "", vendor: "", invoiceNumber: "", notes: "", bankAccount: "" };
 
 const toCase = (d: Draft): Case => ({
   amount: Number(d.amount),
   vendor: d.vendor.trim(),
   invoiceNumber: d.invoiceNumber.trim(),
   notes: d.notes.trim(),
+  ...(d.bankAccount.trim() ? { bankAccount: d.bankAccount.trim() } : {}),
 });
 
 export default function Home() {
@@ -150,7 +151,7 @@ export default function Home() {
 
   function openRun(r: Run) {
     setCurrent(r.case);
-    setDraft({ amount: String(r.case.amount), vendor: r.case.vendor, invoiceNumber: r.case.invoiceNumber, notes: r.case.notes });
+    setDraft({ amount: String(r.case.amount), vendor: r.case.vendor, invoiceNumber: r.case.invoiceNumber, notes: r.case.notes, bankAccount: r.case.bankAccount ?? "" });
     setResult(r.decision);
     setActiveAt(r.at);
     setEvalMsg(null);
