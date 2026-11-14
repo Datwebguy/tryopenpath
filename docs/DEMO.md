@@ -1,5 +1,7 @@
 # Openpath: Demo Script and X Post
 
+The finished video is [docs/media/openpath-demo.mp4](media/openpath-demo.mp4). It was recorded on the live site with real SERV Reasoning calls and real Reppo scores, with on-screen captions, so it works without sound.
+
 ## Demo video (about 75 seconds)
 
 Record the live site at https://openpath.up.railway.app on a desktop browser. Speak the lines in quotes.

@@ -31,7 +31,7 @@ Openpath stops invoice fraud before an AI agent pays. It is a console where anyo
 - [x] Working console with the full loop
 - [ ] Data collection enabled in the OpenServ organization settings: https://console.openserv.ai/settings/organization
 - [x] Live demo: https://openpath.up.railway.app
-- [ ] Short demo video (script in [DEMO.md](DEMO.md))
+- [x] Demo video: [media/openpath-demo.mp4](media/openpath-demo.mp4)
 - [ ] Write-up: see [SUBMISSION.md](SUBMISSION.md)
 - [ ] X post tagging @openservai
 - [ ] Submission form: https://openserv.typeform.com/submissions02
