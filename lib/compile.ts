@@ -178,6 +178,9 @@ async function ask(messages: ChatMessage[], text: string): Promise<Attempt> {
   return rule ? { rule, answer } : { answer };
 }
 
+// Only the rule or a plain message ever leaves the server, never SERV's raw answer.
+const outcome = (a: Attempt): { rule?: Rule; error?: string } => (a.rule ? { rule: a.rule } : { error: a.error });
+
 export async function compileRule(sentence: string): Promise<{ rule?: Rule; error?: string }> {
   const text = sentence.trim().slice(0, 500);
   if (!text) return { error: "Write the rule in a sentence first." };
@@ -187,7 +190,7 @@ export async function compileRule(sentence: string): Promise<{ rule?: Rule; erro
     { role: "user", content: text },
   ];
   const first = await ask(messages, text);
-  if (first.rule || first.error) return first;
+  if (first.rule || first.error) return outcome(first);
 
   // The answer was not a complete rule. Ask once more, saying exactly what is needed.
   const second = await ask(
@@ -202,10 +205,10 @@ export async function compileRule(sentence: string): Promise<{ rule?: Rule; erro
     ],
     text,
   );
-  if (second.rule || second.error) return second;
+  if (second.rule || second.error) return outcome(second);
 
   // SERV varies from one answer to the next, so one fresh attempt is worth making before giving up.
   const third = await ask(messages, text);
-  if (third.rule || third.error) return third;
+  if (third.rule || third.error) return outcome(third);
   return { error: `SERV's answer was not a complete rule. Try rewording it using ${FIELD_HELP}.` };
 }
