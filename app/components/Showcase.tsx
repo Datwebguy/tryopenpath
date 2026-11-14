@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { money } from "@/lib/format";
-import { AlertIcon, CheckIcon, CodeIcon, SparkIcon, XIcon } from "./Icons";
+import { AlertIcon, CheckIcon, CodeIcon, PlayIcon, SparkIcon, XIcon } from "./Icons";
 
 type Item = {
   id: string;
@@ -66,6 +66,13 @@ export default function Showcase({ onLoaded }: { onLoaded: (has: boolean) => voi
             </Link>
           );
         })}
+        <button type="button" className="show-card cta-card" style={{ animationDelay: `${items.length * 70}ms` }}
+          onClick={() => document.getElementById("try")?.scrollIntoView({ behavior: "smooth", block: "start" })}>
+          <span className="cta-icon"><PlayIcon width={18} height={18} /></span>
+          <h3>Your turn</h3>
+          <p className="show-note">Write a policy, add a rule in your own words, and run a case. Every step shows up live, with a real score.</p>
+          <span className="show-open">Try it yourself →</span>
+        </button>
       </div>
     </section>
   );
