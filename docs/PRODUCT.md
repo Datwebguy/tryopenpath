@@ -28,7 +28,7 @@ You write the rules once and run a case. You see which steps were fixed rules, w
 - Fixed-rule steps for limits, math and field checks, checked exactly every time.
 - An AI step only where judgment is needed, labeled with the model and the time it took.
 - Every run saved with its path and score.
-- Identity and session limits from Kite Passport when connected.
+- Changed bank details caught against the account on file.
 - Reppo scoring that feeds the next run.
 
 ## Rules in your own words
@@ -41,7 +41,6 @@ Every run has a link that opens a read-only page with the decision, the path and
 Nothing is built in. The policy text, spending limit, vendor list and PO list are all yours. The case form suggests values from the lists you saved.
 
 ## Tracks
-- **Kite:** verifiable identity and session spending limits in the path.
 - **Reppo:** real feedback turned into a measurable score change.
 - **Open:** SERV Reasoning writes your rules from plain sentences and powers the judgment step.
 

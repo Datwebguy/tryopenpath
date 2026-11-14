@@ -4,7 +4,7 @@ import { readJson, wsFile, writeJson } from "./storage";
 
 export type Policy = {
   text: string; // plain-language policy, shown to the model and to Reppo
-  limit: number; // spending limit in USD (Kite limit)
+  limit: number; // spending limit in USD
   vendors: string[]; // approved vendor list
   pos: string[]; // known PO numbers
   rules: Rule[]; // your own rules, written in plain words and compiled by SERV

@@ -11,7 +11,7 @@ export function runCodeChecks(c: Case, policy: Policy): Step[] {
   const fieldsOk = Number.isFinite(c.amount) && c.amount > 0 && !!c.vendor && !!c.invoiceNumber;
   steps.push({ step: "parse_case", type: "code", result: fieldsOk ? "ok" : "failed" });
 
-  // The spending limit from the policy. Kite Passport limits are checked separately.
+  // The spending limit from the policy.
   const underLimit = c.amount <= limit;
   steps.push({
     step: "policy_spending_limit",

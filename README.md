@@ -116,7 +116,6 @@ Every run has a link. It opens a read-only page with the decision, the path and 
 |---|---|
 | **SERV Reasoning** (OpenServ) | The core of Openpath. It writes your plain-language rules as exact rules, and it makes every AI judgment, using any chat model from the SERV catalog. |
 | **Reppo** | Scores every decision. Scores and critiques are saved and used on the next run. |
-| **Kite Passport** | Adds identity and session spending-limit checks to the path once `kpass` is connected. |
 
 ## Quick start
 
@@ -144,27 +143,9 @@ Open the console, write your first policy, and run a case.
 | `SERV_API_KEY`, `SERV_MODEL` | Your SERV key and the model to use, for example `serv-mini`. |
 | `SERV_RULES_MODEL` | Optional. A different SERV model for turning rule sentences into rules. Defaults to `SERV_MODEL`. |
 | `REPPO_API_KEY` | Enables scoring and the feedback loop. |
-| `KPASS_BIN` | Optional. Where `kpass` is installed, to add Kite Passport checks. |
 | `OPENPATH_DATA_DIR` | Where your policy and history are saved. Defaults to `.data` in the project. |
 
 The integrations bar at the top of the console shows which services are active.
-
-### Adding Kite Passport
-
-Install the CLI, sign in, and approve a spending session:
-
-```bash
-curl -fsSL https://cli.gokite.ai/install.sh | bash
-kpass login init --email you@example.com
-kpass login verify --login-id <LOGIN_ID> --code <CODE_FROM_EMAIL>
-kpass agent:session create --task-summary "Openpath invoice review" \
-  --max-amount-per-tx 500 --max-total-amount 2000 --ttl 24h --assets USDC --payment-approach x402_http
-```
-
-Then set `KPASS_BIN` to the `kpass` path. Every case now includes two steps:
-
-- **Kite identity:** confirms the signed-in Passport user with `kpass me`.
-- **Kite session limit:** reads your active session and checks the amount against its per-transaction limit, the budget it has left (total minus spent and reserved), and its expiry.
 
 ## Deploy on Railway
 
@@ -186,7 +167,7 @@ Each visitor works in a private workspace, runs are saved by the server, every r
 
 ## Built for SERV Hackathon Edition 02
 
-Tracks: **Kite**, **Reppo** and **Open**.
+Tracks: **Reppo** and **Open**.
 [Submission form](https://openserv.typeform.com/submissions02)
 
 ## Author

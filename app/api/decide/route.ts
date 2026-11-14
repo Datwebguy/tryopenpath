@@ -6,7 +6,6 @@ import { routeLabel, stepLabel, verdictLabel } from "@/lib/format";
 import { addRun, latestScored, vendorRunCount } from "@/lib/history";
 import { parseCase, readBody } from "@/lib/input";
 import { judge } from "@/lib/judge";
-import { kiteChecks } from "@/lib/kite";
 import { guard } from "@/lib/limit";
 import { getPolicy } from "@/lib/policy";
 import { maskAccount } from "@/lib/account";
@@ -40,7 +39,7 @@ export async function POST(req: Request) {
       (prior.critiques ?? []).map((k) => `${k.criterion}: ${k.score}/100`).join(", ")
     : undefined;
 
-  const path = [...runCodeChecks(c, policy), ...(await kiteChecks(c))];
+  const path = runCodeChecks(c, policy);
 
   // Your own rules, written in plain words and compiled by SERV.
   const ctx: RuleContext = {

@@ -4,7 +4,7 @@
 **Organizer:** OpenServ ([@openservai](https://x.com/openservai))
 **Deadline:** November 15, 2026, 23:59 UTC
 **Prize pool:** $5,000
-**Tracks:** Kite, Reppo, Open
+**Tracks:** Reppo, Open
 
 ## In one line
 Openpath stops invoice fraud before an AI agent pays. It is a console where anyone writes a policy for an AI agent, runs a case through it, and sees the exact path the decision took, with exact limits enforced every time, AI judgment where judgment is needed, and a feedback score that shapes the next run.
@@ -15,7 +15,7 @@ Openpath stops invoice fraud before an AI agent pays. It is a console where anyo
 3. Submit a case: amount, vendor, invoice or PO number, and notes.
 4. Fixed rules run first. If a rule decides the case, the AI step is skipped.
 5. The judgment step runs on SERV Reasoning.
-6. Kite Passport identity and session limits join the path when the `kpass` CLI is connected.
+6. A changed bank account holds the payment before any AI is asked.
 7. The console shows the decision and the full path, and any run can be shared with a link.
 8. Reppo's Evaluation API scores the decision. The score and critique are stored.
 9. Running the same case again carries that feedback forward, shows the score change, and adds a point to the score chart.

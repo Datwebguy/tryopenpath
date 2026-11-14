@@ -31,8 +31,7 @@
     "policy",
     "reasoning",
     "serv",
-    "reppo",
-    "kite"
+    "reppo"
   ],
   "engines": {
     "node": ">=20"

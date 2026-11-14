@@ -6,6 +6,5 @@ export async function GET() {
   return NextResponse.json({
     serv: !!(e.SERV_API_KEY && e.SERV_MODEL),
     reppo: !!e.REPPO_API_KEY,
-    kite: !!e.KPASS_BIN,
   });
 }

@@ -1,9 +1,8 @@
-export type Status = { serv: boolean; reppo: boolean; kite: boolean };
+export type Status = { serv: boolean; reppo: boolean };
 
 const ITEMS: { key: keyof Status; name: string; role: string }[] = [
   { key: "serv", name: "SERV Reasoning", role: "AI judgment" },
   { key: "reppo", name: "Reppo", role: "scoring" },
-  { key: "kite", name: "Kite Passport", role: "identity and limits" },
 ];
 
 export default function Integrations({ status }: { status: Status | null }) {

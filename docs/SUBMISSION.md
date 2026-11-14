@@ -7,7 +7,7 @@ Openpath
 Stop invoice fraud before your AI agent pays.
 
 ## Tracks
-Kite, Reppo and Open.
+Reppo and Open.
 
 ## Live demo
 https://openpath.up.railway.app
@@ -48,7 +48,6 @@ The path labels every step as a rule or AI, shows which model answered and how l
 
 ## Partner usage
 - **Reppo:** every decision is submitted to the Evaluation API, together with the policy and the owner's rules. The score, route, reason and rubric scores are saved, fed into the next run of the same case, and shown as a score change and a chart.
-- **Kite:** Openpath runs the `kpass` CLI to add identity, per-transaction limit, remaining session budget and expiry checks to the path once Kite Passport is connected on the server.
 
 ## Built to be trusted
 Each visitor works in a private workspace, the server saves every run itself, inputs are validated, routes are rate limited, and the page ships with strict browser security headers. Details: https://github.com/Datwebguy/tryopenpath/blob/main/SECURITY.md

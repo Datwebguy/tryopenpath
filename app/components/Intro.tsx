@@ -34,7 +34,7 @@ export default function Intro({ hasShowcase }: { hasShowcase: boolean }) {
           <p>Every step is on record, SERV Reasoning explains its judgment, Reppo scores each call independently, and one link shares the proof.</p>
         </div>
       </div>
-      <p className="built">For small finance teams, bookkeepers, and anyone building an AI agent that pays bills · Built on <b>SERV Reasoning</b> · scored by <b>Reppo</b> · ready for <b>Kite Passport</b></p>
+      <p className="built">For small finance teams, bookkeepers, and anyone building an AI agent that pays bills · Built on <b>SERV Reasoning</b> · scored by <b>Reppo</b></p>
     </section>
   );
 }

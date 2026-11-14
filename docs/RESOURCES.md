@@ -28,19 +28,6 @@ Primary sources for SERV Hackathon Edition 02 and the partner stacks.
 - Boundaries and control: https://x.com/dashersw/status/2120925254222573604
 - Graph Sharding interest form: https://openserv.typeform.com/graphsharding
 
-## Kite
-- Passport: https://docs.gokite.ai/passport
-- Install: https://docs.gokite.ai/passport/install
-- Passport skills: https://docs.gokite.ai/reference/passport-skills
-- kpass CLI reference: https://docs.gokite.ai/reference/kpass-cli
-- Docs index: https://docs.gokite.ai/llms.txt
-- Reference implementation of `kpass` output handling: https://github.com/gnanam1990/kitepass-mcp
-- Reference repositories:
-  - https://github.com/CarryWang/kite-x402-explorer
-  - https://github.com/BrKDDD/kite-x402-hono
-  - https://github.com/tianzeshi-study/kite-x402-axum
-  - https://github.com/gokite-ai/kite_counter_dapp
-
 ## Reppo
 - Integration guide for agents: https://eval.reppo.xyz/agents.md
 - What is the Evaluation API: https://docs.reppo.ai/concepts/evaluation-api
@@ -59,4 +46,3 @@ Primary sources for SERV Hackathon Edition 02 and the partner stacks.
 - SERV needs a system prompt on every request, and Openpath sends one.
 - `/v1/chat/completions` works across the whole SERV catalog.
 - Reppo evaluations are asynchronous: submit, keep the `id`, and poll until `COMPLETED`.
-- Kite Passport runs through the `kpass` CLI, which Openpath calls when `KPASS_BIN` is set.

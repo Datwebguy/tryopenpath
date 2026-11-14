@@ -29,7 +29,7 @@ A Next.js (App Router, TypeScript) application with one flow: policy and case, h
 1. `parse_case`: required fields and numbers.
 2. `policy_spending_limit`: amount against your limit.
 3. `po_match` and `vendor_allowlist`: against your saved lists.
-4. `kite_identity` and `kite_session_limit`: added when `KPASS_BIN` is set.
+4. `bank_account`: the account on the invoice against the vendor's account on file. A change holds the payment.
 5. Your own rules, one step each. A rule that matches denies the case or sends it to a person.
 6. `load_feedback`: the stored Reppo score for the same case.
 7. `model_judgment`: skipped when a rule already decided the case.
@@ -57,9 +57,6 @@ A Next.js (App Router, TypeScript) application with one flow: policy and case, h
 
 ## Reppo
 `lib/reppo.ts` follows the Evaluation API guide at https://eval.reppo.xyz/agents.md. A decision is submitted with `taskType: "action"`, and the status moves from `QUEUED` and `PROCESSING` to `COMPLETED`. The score, route, reason and rubric scores are stored with the run.
-
-## Kite Passport
-`lib/kite.ts` runs the `kpass` CLI with `--output json --no-interactive`, because Kite publishes its Passport interface as a CLI. `kpass me` confirms identity. `kpass agent:session list --status active` (or `kpass user sessions --status active`) returns the active session with `max_amount_per_tx`, `max_total_amount`, `spent_total`, `reserved_total` and `expires_at`. The amount must fit the per-transaction limit and the budget left, and the session must not have expired. Errors arrive as JSON with a `hint`, which the path shows.
 
 ## Storage and visitors
 Each visitor gets a private workspace tied to a random, HttpOnly cookie (`lib/workspace.ts`). Their `policy.json` and `history.json` live in `OPENPATH_DATA_DIR/ws/<id>/`, so no visitor can read, change or clear another's data. `OPENPATH_DATA_DIR` defaults to `.data` in the project. On Railway, mount a volume and point the variable at it.
