@@ -12,7 +12,7 @@
 
 <h3 align="center">Stop invoice fraud before your AI agent pays.</h3>
 
-<p align="center"><b><a href="https://openpath.up.railway.app">Try it live: openpath.up.railway.app</a></b> · <b><a href="docs/media/openpath-demo.mp4">Watch the demo (under 3 min, with voiceover)</a></b></p>
+<p align="center"><b><a href="https://openpath.up.railway.app">Try it live: openpath.up.railway.app</a></b> · <b><a href="docs/media/openpath-demo.mp4">Watch the 3-minute demo, with voiceover</a></b></p>
 
 <p align="center">
   <img src="docs/images/00-landing.png" alt="The Openpath landing page: the problem, three ideas, and buttons to see it in action or try it" width="100%">

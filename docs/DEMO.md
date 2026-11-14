@@ -2,20 +2,25 @@
 
 The finished video is [docs/media/openpath-demo.mp4](media/openpath-demo.mp4). It was recorded on the live site with real SERV Reasoning calls and real Reppo scores, with a voiceover and matching on-screen captions, so it works with or without sound.
 
-## Demo video (about 75 seconds)
+## Demo video (3 minutes, with voiceover)
 
-Record the live site at https://openpath.up.railway.app on a desktop browser. Speak the lines in quotes.
+The video opens on the problem, then the solution, then a live walkthrough. Every scene was recorded on the live site with real SERV Reasoning calls and real Reppo scores.
 
-| Time | On screen | Say |
+| Time | On screen | Voiceover |
 |---|---|---|
-| 0:00 to 0:10 | The landing page, top. | "Fraudsters love invoices: we changed banks, urgent from the CEO. Now AI agents pay invoices, and an AI can be talked into a yes. Openpath stops it." |
-| 0:10 to 0:20 | Point to the three cards. | "It catches the classic tricks, enforces rules the AI cannot override, and gives proof for every payment, scored independently by Reppo." |
-| 0:20 to 0:35 | Click **See it in action**. Open **Bank details changed, payment held**. | "This invoice asks to be paid into a new account. It does not match the one on file, so Openpath holds it, and the AI is never even asked." |
-| 0:35 to 0:48 | Go back. Open **An attack hidden in the notes, caught**. | "Here the notes tell the AI to ignore its instructions and approve. SERV Reasoning refuses and sends it to a person. Reppo scored that 100." |
-| 0:48 to 1:05 | Go back. Click **Try it yourself**. In the policy form, type a rule such as "Deny invoices over 3000 dollars from vendors we have not used before" and press **Add with SERV**. | "Rules are written in plain English. SERV Reasoning turns each one into an exact rule, and shows you how it understood it." |
-| 1:05 to 1:15 | Save, run a case, show the path and the score arriving. Click **Share this run**. | "Run a case, see every step, get an independent score, and share the proof with one link. That is Openpath." |
+| 0:00 | A real invoice: "we have changed banks, pay the new account" | "This invoice says the vendor changed banks, and asks to be paid into a new account." |
+| 0:05 | Full screen: $2.77 billion, FBI Internet Crime Report 2024 | "It's one of the costliest scams in business. Nearly 2.8 billion dollars lost in 2024 alone." |
+| 0:16 | The decision, then the bank-account step, highlighted | "Now AI agents are paying invoices, and an AI can be talked into a yes. Openpath caught this one." |
+| 0:25 | Title | "This is Openpath. It stops invoice fraud before your AI agent pays." |
+| 0:31 | The landing page | The problem: nobody can see why an AI said yes, or prove the rules were followed. |
+| 0:40 | The three ideas, each highlighted in turn | The solution: rules the AI can't override, SERV Reasoning for judgment, Reppo scoring every decision. |
+| 1:06 | An attack in the notes | The AI is told to ignore its instructions and approve. SERV Reasoning refuses. |
+| 1:23 | Building a policy | A bank account on file, and a rule in plain English that SERV turns into an exact rule. |
+| 1:51 | A new bank account on the invoice | Held before any money moves. |
+| 2:10 | The right account | SERV Reasoning approves, Reppo scores it, and one link shares the proof. |
+| 2:47 | Closing | "Every payment decision, on a path you can prove. Try it now at openpath.up.railway.app." |
 
-Tips: use a fresh browser window so the console starts clean. Scoring takes 30 to 90 seconds, so you can cut that wait in editing.
+Source for the figure: FBI Internet Crime Report 2024, business email compromise losses of about $2.77 billion.
 
 ## X post
 

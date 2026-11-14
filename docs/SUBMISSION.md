@@ -53,7 +53,7 @@ The path labels every step as a rule or AI, shows which model answered and how l
 Each visitor works in a private workspace, the server saves every run itself, inputs are validated, routes are rate limited, and the page ships with strict browser security headers. Details: https://github.com/Datwebguy/tryopenpath/blob/main/SECURITY.md
 
 ## Demo video
-https://github.com/Datwebguy/tryopenpath/blob/main/docs/media/openpath-demo.mp4 (under 3 minutes, with voiceover, captions and an interactive walkthrough, recorded on the live site with real SERV Reasoning calls and real Reppo scores)
+https://github.com/Datwebguy/tryopenpath/blob/main/docs/media/openpath-demo.mp4 (3 minutes, with voiceover and captions: the problem, the solution, then a live walkthrough, recorded on the live site with real SERV Reasoning calls and real Reppo scores)
 
 ## X post
 Add the link to the post here. The draft is in docs/DEMO.md.
