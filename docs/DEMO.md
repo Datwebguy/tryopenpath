@@ -1,6 +1,6 @@
 # Openpath: Demo Script and X Post
 
-The finished video is [docs/media/openpath-demo.mp4](media/openpath-demo.mp4). It was recorded on the live site with real SERV Reasoning calls and real Reppo scores, with on-screen captions, so it works without sound.
+The finished video is [docs/media/openpath-demo.mp4](media/openpath-demo.mp4). It was recorded on the live site with real SERV Reasoning calls and real Reppo scores, with a voiceover and matching on-screen captions, so it works with or without sound.
 
 ## Demo video (about 75 seconds)
 
