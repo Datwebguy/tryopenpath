@@ -21,7 +21,7 @@
     <rect x="324" y="96" width="252" height="48" rx="12" fill="#fff" stroke="#b6e0f8"/><text x="450" y="126" text-anchor="middle">Parse case</text>
     <rect x="324" y="156" width="252" height="48" rx="12" fill="#fff" stroke="#b6e0f8"/><text x="450" y="186" text-anchor="middle">Spending limit</text>
     <rect x="324" y="216" width="252" height="48" rx="12" fill="#fff" stroke="#b6e0f8"/><text x="450" y="246" text-anchor="middle">PO match · Vendor list</text>
-    <rect x="324" y="276" width="252" height="48" rx="12" fill="#fff" stroke="#b6e0f8"/><text x="450" y="306" text-anchor="middle">Kite Passport identity + session</text>
+    <rect x="324" y="276" width="252" height="48" rx="12" fill="#fff" stroke="#b6e0f8"/><text x="450" y="306" text-anchor="middle">Bank account on file · Your rules</text>
     <rect x="324" y="336" width="252" height="48" rx="12" fill="#fff" stroke="#b6e0f8"/><text x="450" y="366" text-anchor="middle">Load stored feedback</text>
   </g>
 

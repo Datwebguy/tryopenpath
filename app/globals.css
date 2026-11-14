@@ -121,7 +121,7 @@ textarea { resize: vertical; }
 
 /* Policy view */
 .policy-view blockquote { margin: 0 0 16px; padding: 14px 16px; background: #f8f9fd; border-left: 4px solid var(--brand); border-radius: 0 12px 12px 0; color: #25304a; }
-.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); gap: 8px; margin: 0; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; }
 .facts div { background: #f8f9fd; border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
 .facts dt { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
 .facts dd { margin: 2px 0 0; font-weight: 700; font-size: 1.05rem; }
