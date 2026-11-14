@@ -3,6 +3,7 @@ import { findRunIn, updateRun } from "@/lib/history";
 import { readBody } from "@/lib/input";
 import { guard } from "@/lib/limit";
 import { getPolicy } from "@/lib/policy";
+import { describeRule } from "@/lib/rules";
 import { reppoConfigured, submitEval } from "@/lib/reppo";
 import { workspace } from "@/lib/workspace";
 
@@ -29,7 +30,13 @@ export async function POST(req: Request) {
 
   inFlight.add(runId);
   try {
-    const evalId = await submitEval(getPolicy(ws)?.text ?? "", run.case, run.decision);
+    // Reppo judges against the whole policy: the plain text plus the owner's own rules.
+    const policy = getPolicy(ws);
+    const rules = policy?.rules ?? [];
+    const policyText =
+      (policy?.text ?? "") +
+      (rules.length ? `\nRules the policy owner added, enforced exactly:\n${rules.map((r) => `- ${r.label}: ${describeRule(r)}`).join("\n")}` : "");
+    const evalId = await submitEval(policyText, run.case, run.decision);
     updateRun(ws, runId, { evalId });
     return NextResponse.json({ evalId, runId });
   } catch (e) {
