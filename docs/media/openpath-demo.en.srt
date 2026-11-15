@@ -1,0 +1,87 @@
+1
+00:00:00,400 --> 00:00:04,658
+This invoice says the vendor changed banks, and asks to be paid into a new account.
+
+2
+00:00:05,000 --> 00:00:13,307
+It's one of the costliest scams in business. Nearly $2.8 billion lost in 2024 alone, according to the FBI.
+
+3
+00:00:16,500 --> 00:00:23,840
+Now AI agents are paying invoices. And an AI can be talked into a yes. Openpath caught this one, and held the payment.
+
+4
+00:00:25,400 --> 00:00:30,180
+This is Openpath. It stops invoice fraud, before your AI agent pays.
+
+5
+00:00:31,600 --> 00:00:38,784
+Here's the problem. When an AI agent approves a payment, nobody can see why it said yes, or prove the rules were followed.
+
+6
+00:00:40,400 --> 00:00:43,143
+Openpath sits between the agent and the money.
+
+7
+00:00:44,300 --> 00:00:48,924
+Fixed rules the AI can't override, like checking the bank account on file.
+
+8
+00:00:50,000 --> 00:00:54,676
+SERV Reasoning, only for the judgment calls, like an urgent message from the CEO.
+
+9
+00:00:55,800 --> 00:00:59,405
+And Reppo's independent evaluators score every single decision.
+
+10
+00:01:06,300 --> 00:01:11,681
+Even when the notes try to hijack the AI, and tell it to ignore its instructions and approve,
+
+11
+00:01:15,500 --> 00:01:18,739
+SERV Reasoning refuses, and sends the case to a person.
+
+12
+00:01:23,100 --> 00:01:24,798
+Setting it up takes about a minute.
+
+13
+00:01:29,800 --> 00:01:32,308
+Keep each vendor's bank account on file.
+
+14
+00:01:34,300 --> 00:01:38,845
+Then write a rule in plain English. SERV Reasoning turns it into an exact rule.
+
+15
+00:01:44,400 --> 00:01:47,874
+Here's how SERV understood it. It runs the same way, every time.
+
+16
+00:01:51,800 --> 00:01:56,293
+Same vendor. But this invoice asks to be paid into a different account.
+
+17
+00:02:04,600 --> 00:02:07,891
+Held, before any money moves. Again, the AI is never asked.
+
+18
+00:02:10,800 --> 00:02:15,006
+With the account on file, SERV Reasoning reads the notes, and makes the call.
+
+19
+00:02:26,800 --> 00:02:29,961
+Then Reppo's evaluators score the decision, independently.
+
+20
+00:02:39,900 --> 00:02:43,244
+And the score feeds the next run of the same case.
+
+21
+00:02:43,500 --> 00:02:46,556
+One link shares the proof. Every step, and the score.
+
+22
+00:02:47,600 --> 00:02:55,985
+Openpath. Every payment decision, on a path you can prove. Try it now, at openpath.up.railway.app.
